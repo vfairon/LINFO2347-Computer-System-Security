@@ -1,0 +1,26 @@
+%%%%%%%%
+% Text %
+%%%%%%%%
+
+%%%%% séparateur %%%%%
+\newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
+%%%%% => %%%%%
+\newenvironment{arrowitemize}
+    {\begin{itemize}[label=$\Rightarrow$]}
+    {\end{itemize}}
+\newcommand{\donc}[1]{
+    \begin{arrowitemize}
+        \item #1
+    \end{arrowitemize}}
+%%%%% <T> %%%%%
+\newcommand{\hooks}[1]{\textless{}#1\textgreater{}}
+%%%%% {T} %%%%%
+\newcommand{\braces}[1]{\textbraceleft{}#1\textbraceright{}}
+%%%%% subitemize %%%%%
+\newenvironment{subitemize}
+    {\begin{itemize}[label=$\star$]}
+    {\end{itemize}}
+%%%%% subsubitemize %%%%%
+\newenvironment{subsubitemize}
+    {\begin{itemize}[label=$\circ$]}
+    {\end{itemize}}

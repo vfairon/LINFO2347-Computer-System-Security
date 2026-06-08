@@ -1,0 +1,33 @@
+% Warnings
+% chktex-file x
+\section{Basic Concepts}
+
+A secure system is :
+\begin{itemize}
+    \item \textbf{Confidential :} no attacker can \textbf{steal/read} data
+    \item \textbf{Integrity : } no attacker can \textbf{modify} data/system behavior
+    \item \textbf{Availability :} no attacker can disturb access 
+\end{itemize}
+We say that if a system is \textbf{vulnerable} it is exposed to \textbf{threats} that could lead to an \textbf{exploit} of the vulnerability so there is a \textbf{risk}.
+
+\subsection{The STRIDE Threat Model}
+Classification of security threats in six categories :
+\begin{itemize}
+    \item Spoofing : faking identity 
+    \item Tampering : modification of smth 
+    \item Repudiation : lack of logs to prove previous actions
+    \item Information Disclosure : secrets get disclosed
+    \item Denial of Service : make a service unavailable 
+    \item Elevation of Privilege : getting higher privilege than initially
+\end{itemize}
+
+A voir si le reste du chapitre est vraiment intéressant pour l'examen ... 
+
+We can do \textbf{access control} to restrict the access to certain resources to specific (groups of) users. We can implement it using both \textbf{authentication} (ie verifying the identity of the person) or \textbf{Authorization} (ie define who has access to what).
+
+For files in Linux it is implemented using permissions defined on groups and users. For network it is implemented using firewalls.
+
+As it is difficult to handle many privilege, it is recommended to use the \textbf{Principle of least privilege} : define the access control rules such that users only have access right needed to do their jobs, not more. It is the same for networking : no component should have more access than what is needed for its function (ie block everything and only allow what is needed).
+
+
+
