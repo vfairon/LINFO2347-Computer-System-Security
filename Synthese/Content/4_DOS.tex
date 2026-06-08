@@ -1,0 +1,39 @@
+\section{DoS Attacks}
+\paragraph{Goal :} overload or crash a server to make the service unavailable to legitimate users. There can be \textbf{semantic} attacks ("smart") or \textbf{brute-force} attacks.
+
+\paragraph{Semantic attacks } overload a server by sending knowledge-specific requests. These can include : 
+\begin{itemize}
+    \item computational intensive SQL queries
+    \item error generating requests
+    \item part of an HTTP request so that the server waits for the rest
+\end{itemize}
+
+\paragraph{Brute-force attacks } overload a server by sending many "random" requests. These can include : 
+\begin{itemize}
+    \item Exhausting number of TCP connections (SYN flooding)
+    \item Exhausting the number of application sessions
+\end{itemize}
+
+\paragraph{Distributed DoS attack (DDoS)}  can be executed by combining many attacker sources with different IP addresses.
+
+
+\paragraph{Reflected DoS attack (RDoS)}
+
+A reflected DoS attack is performed by spoofing the victim's IP address and using it as the source address of requests sent to third-party servers (e.g., DNS servers). The servers then send their responses to the victim instead of the attacker.
+
+\vspace{0.3em}
+
+This technique provides two advantages:
+
+\begin{itemize}
+    \item \textbf{Reflection:} the attack traffic appears to originate from legitimate servers rather than from the attacker.
+    \item \textbf{Amplification:} the response is often larger than the request. As a result, a small amount of traffic sent by the attacker can generate a much larger volume of traffic towards the victim.
+\end{itemize}
+
+\vspace{0.3em}
+
+\paragraph{Network Ingress Filtering}
+
+Network ingress filtering is a defense against such attacks based on IP spoofing. It consists of configuring firewalls to verify that the source IP address of a packet is consistent with the network from which the packet originates.
+
+This filtering is typically performed by the attacker's ISP or edge router, as close as possible to the source of the traffic.

