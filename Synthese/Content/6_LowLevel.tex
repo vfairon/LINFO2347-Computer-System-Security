@@ -1,0 +1,91 @@
+\section{Program Execution Basics}
+\subsection{Key Concepts}
+\subsubsection{Memory Organization}
+Each running process has its own \textbf{virtual address space}, divided into four regions:
+\begin{itemize}
+\item \textbf{Code/Text segment}: machine instructions.
+\item \textbf{Static data}: global variables and constants.
+\item \textbf{Heap}: dynamically allocated memory (\texttt{malloc}, \texttt{new}, \ldots).
+\item \textbf{Stack}: function call frames (detailed below).
+\end{itemize}
+From the CPU's perspective, variables are simply memory locations — their type and structure are a compiler-level concept.
+\paragraph{Alignment and Padding.}
+For performance, compilers align data to natural boundaries: 32-bit values on 4-byte boundaries, 64-bit values on 8-byte boundaries. This may introduce unused \textbf{padding bytes} between variables.
+\paragraph{C Strings.}
+\subsubsection{Registers}
+Registers are small storage locations inside the CPU. Three registers are central to function calls:
+\begin{itemize}
+\item \textbf{Program Counter (PC)}, also called the Instruction Pointer (IP): holds the \emph{address} of the next instruction to execute. After a normal instruction it advances automatically; after a jump or call it is set to the target address.
+\item \textbf{Stack Pointer (SP)}: holds the address of the top of the stack. The stack grows toward \emph{lower} addresses, so SP decreases when data is pushed.
+\item \textbf{Frame Pointer (FP)}: holds a fixed reference point inside the current stack frame, making local variables and parameters accessible at known offsets.
+\end{itemize}
+\subsubsection{Stack Frames}
+Every function call creates a \textbf{stack frame} — a contiguous block of stack memory belonging to that invocation. A frame typically contains, from higher to lower addresses:
+\begin{center}
+\begin{tabular}{|c|}
+\hline
+Parameters \\
+\hline
+Return address \\
+\hline
+Saved FP \\
+\hline
+Local variables \\
+\hline
+\end{tabular}
+\end{center}
+The \textbf{return address} is the address of the instruction to resume in the caller once the function returns. The \textbf{saved FP} is the caller's frame pointer, preserved here so it can be restored on return. Since there is only one FP register, each function must save the caller's value before using FP for itself.
+The FP divides the frame into two zones reachable by fixed offsets:
+\begin{itemize}
+\item \emph{Above} FP (positive offsets): parameters and caller information.
+\item \emph{Below} FP (negative offsets): local variables.
+\end{itemize}
+
+\subsection{Walkthrough: \texttt{g()} calls \texttt{f(3,4)}}
+Consider the following code:
+\begin{lstlisting}[language=C]
+int f(int a, int b) {
+int i, j;
+return a + b;
+}
+void g() {
+int x = f(3, 4);
+}
+\end{lstlisting}
+\paragraph{Building the frame (call).}
+When \texttt{g()} calls \texttt{f(3,4)}, the following happens in order:
+\begin{enumerate}
+\item Parameters \texttt{4} then \texttt{3} are pushed onto the stack.
+\item The \texttt{call} instruction pushes the \textbf{return address} — the address of the instruction in \texttt{g()} immediately after the call — and sets the PC to \texttt{f()}.
+\item \texttt{f()} saves \texttt{g()}'s FP (the \textbf{saved FP}), then sets FP to the current SP, anchoring the new frame.
+\item SP is decreased to reserve space for local variables \texttt{i} and \texttt{j}.
+\end{enumerate}
+The resulting stack frame for \texttt{f()} looks like this (on a 32-bit architecture):
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline
+\texttt{FP + 12} & Parameter b=4b = 4
+b=4 \\
+\hline
+\texttt{FP + 8}  & Parameter a=3a = 3
+a=3 \\
+\hline
+\texttt{FP + 4}  & Return address \\
+\hline
+\texttt{FP + 0}  & Saved FP \\
+\hline
+\texttt{FP - 4}  & Local variable jj
+j \\
+\hline
+\texttt{FP - 8}  & Local variable ii
+i \\
+\hline
+\end{tabular}
+\end{center}
+\paragraph{Tearing down the frame (return).}
+When \texttt{f()} returns:
+\begin{enumerate}
+\item SP is restored, discarding the local variables.
+\item The saved FP is popped, restoring \texttt{g()}'s frame pointer.
+\item The return address is popped into the PC, resuming execution in \texttt{g()} right after the call.
+\end{enumerate}
