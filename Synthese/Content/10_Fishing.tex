@@ -1,0 +1,70 @@
+\section{Spam }
+
+\paragraph{How to send spam ?}
+\begin{itemize}
+    \item Setup your own mail server at home. But untrusted IP \& rate limiting from the ISP
+    \item Setup your own mail server on a cloud sever : trusted IP, better
+    \item Create fake gmail accounts. Slow and rate limitation
+    \item Use an open mail-relay server which forwards any e-mail to other mail servers
+    \item Use compromised e-mail. Good because looks legitimate
+\end{itemize}
+
+LLM's make it easier for attackers to increase the click-through rate.
+
+\paragraph{Mail Filtering}
+Can both run in the mail server or the mail client
+They analyse several things : 
+\begin{itemize}
+    \item IP 
+    \item E-mail address 
+    \item Keywords
+    \item Suspicious URL's
+\end{itemize}
+According to these criterions, the filter computes a score and flags if above a configurable threashold.
+
+
+
+\paragraph{SPF (Sender Policy Framework)}
+SPF allows a domain owner to specify which IP addresses are authorized to send emails for the domain. This information is stored in a DNS TXT record and can be queried by receiving mail servers to verify that the sender's IP address is legitimate. For example, UCLouvain may authorize only \texttt{smtp.uclouvain.be} to send emails for \texttt{@uclouvain.be}; when Gmail receives such an email, it checks the SPF record to verify that the sending IP is indeed authorized by the domain.
+
+\paragraph{DKIM (DomainKeys Identified Mail)}
+DKIM allows a mail server to digitally sign outgoing emails using its private key. The corresponding public key is published in a DNS TXT record and can be retrieved by the recipient's mail server. This enables the receiver to verify both that the email originates from the claimed domain and that its contents have not been modified during transit.
+
+\paragraph{DMARC}
+DMARC extends SPF and DKIM by specifying how receiving mail servers should verify the sender's domain and react to failed checks (e.g., reject or quarantine the email).
+
+\paragraph{Blacklists and Greylisting}
+Mail servers can compare the sender's IP address against blacklists of known spam sources. These blacklists are often queried via DNS and may contain compromised hosts, botnets, or known spam servers. A related technique, called \emph{greylisting}, temporarily rejects a first delivery attempt; legitimate mail servers usually retry later, whereas many spam servers do not.
+
+\paragraph{Bayesian Spam Filtering}
+Bayesian filtering classifies emails based on the occurrence of words
+(\emph{tokens}) in previously observed spam and legitimate emails.
+
+\textbf{Training phase:}
+A large corpus of spam and non-spam emails is collected. For each token $t$, the filter computes the probability that an email containing $t$ is spam using Bayes' theorem:
+
+\[
+P(\text{Spam}\mid t)
+=
+\frac{P(t\mid \text{Spam})}
+     {P(t\mid \text{Spam}) + P(t\mid \text{Not Spam})}
+\]
+
+The $P(t\mid \text{Spam})$ is simply the number of spam emails containing $t$ divided by the numbers of spam emails.
+
+\textbf{Classification phase:}
+When a new email arrives, it is split into tokens $t_1,t_2,\ldots,t_n$. The spam probabilities of the individual tokens are then combined using a Naive Bayes classifier (which assumes token independence):
+
+\[
+P(\text{Spam}\mid m)
+=
+\frac{\prod_i p_i}
+     {\prod_i p_i + \prod_i (1-p_i)}
+\]
+
+where $p_i=P(\text{Spam}\mid t_i)$.
+
+The resulting probability can then be compared to a threshold to decide whether the email should be classified as spam.
+
+\paragraph{Remarks}
+Tokens with probabilities close to $0.5$ carry little information and may be ignored. The model can be improved by considering word pairs (\emph{bigrams}) instead of assuming token independence. 

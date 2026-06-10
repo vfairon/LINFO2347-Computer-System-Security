@@ -1,0 +1,41 @@
+\section{Botnets}
+
+A \textbf{botnet} is a collection of compromised machines, called
+\emph{bots} or \emph{zombies}, controlled remotely by an attacker called
+the \emph{botmaster}. Machines can be recruited through malware, worms,
+phishing emails, pirated software, or attacks against weak passwords.
+
+\paragraph{Command and Control}
+Once infected, bots communicate with one or more
+\emph{Command-and-Control} (C\&C) servers. These servers allow the
+botmaster to send commands, install updates, or collect stolen data such
+as passwords, credit card numbers, or private keys.
+
+\paragraph{Uses of Botnets}
+Botnets can be used to send spam, perform DDoS attacks, steal
+credentials using keyloggers, distribute malware or ransomware, perform
+crypto mining, or automate fraudulent actions.
+
+\paragraph{Architectures}
+Botnets can be centralized, decentralized, or hybrid. In a centralized
+architecture, bots receive commands from a small number of C\&C servers.
+In a decentralized architecture, bots communicate in a peer-to-peer way,
+which makes the botnet harder to take down.
+
+\paragraph{Resilience Techniques}
+Modern botnets try to hide their infrastructure. For example, they may
+use \emph{Fast Flux DNS}, where the IP address of a domain changes
+frequently, or domain generation algorithms, where bots try many possible
+domain names to find an active C\&C server.
+
+\paragraph{Fighting Botnets}
+Defending against botnets is difficult. Possible strategies include
+preventing infection, taking down C\&C servers, seizing domain names, or
+detecting suspicious behavior such as many failed DNS queries. However,
+botnets are often spread across several countries, which makes legal and
+technical takedown operations complex.
+
+\paragraph{Attack Economy}
+Botnets are also part of a criminal market. Attackers can rent botnets,
+buy stolen accounts or credit card data, or purchase DDoS attacks as a
+service, often called \emph{booters} or \emph{stressers}.

@@ -1,0 +1,504 @@
+\section{Cryptography}
+
+Cryptography is used to provide security properties such as
+\textbf{confidentiality}, \textbf{integrity}, and \textbf{authentication}.
+
+
+\paragraph{What cryptography is not}
+Cryptography should not be confused with \emph{steganography}, which
+hides the existence of a message, or with simple \emph{encoding}, which
+only changes the representation of information.
+
+\subsection{Symmetric-Key Cryptography}
+
+In symmetric-key cryptography, the sender and the receiver share the
+same secret key. The same key is used for encryption and decryption.
+
+A symmetric cipher consists of two efficient algorithms:
+
+\[
+E : K \times M \rightarrow C
+\]
+
+\[
+D : K \times C \rightarrow M
+\]
+
+where $K$ is the set of keys, $M$ the set of messages, and $C$ the set
+of ciphertexts. Correctness means that decrypting an encrypted message
+with the same key gives back the original message:
+
+\[
+\forall m \in M, \forall k \in K :
+D(k, E(k,m)) = m
+\]
+
+The main difficulty is that the key must be shared secretly between the
+sender and the receiver.
+
+\paragraph{Perfect Security}
+
+A cipher is perfectly secure if the ciphertext does not reveal any
+information about the plaintext, except possibly its length. More
+formally, encryptions of any two messages should have the same
+distribution over all possible keys.
+
+Perfect security is very strong, but it requires the key length to be at
+least as long as the message length. This is usually impractical.
+
+\paragraph{One-Time Pad}
+
+The One-Time Pad (OTP) is a perfectly secure cipher. It uses a random key
+$k$ of the same length as the message $m$:
+
+\[
+E(k,m) = k \oplus m
+\]
+
+\[
+D(k,c) = k \oplus c
+\]
+
+where $\oplus$ is the bitwise XOR operation.
+
+Decryption works because:
+
+\[
+D(k,E(k,m)) = k \oplus (k \oplus m) = m
+\]
+
+The main problem is that the key must be random, as long as the message,
+and used only once.
+
+\paragraph{Attack on Reused One-Time Pad Keys}
+
+The OTP becomes insecure if the same key is reused for two messages:
+
+\[
+c_1 = m_1 \oplus k
+\]
+
+\[
+c_2 = m_2 \oplus k
+\]
+
+An attacker can compute:
+
+\[
+c_1 \oplus c_2 = m_1 \oplus m_2
+\]
+
+The key disappears. Since human languages are redundant, an attacker can
+often guess parts of one message and recover parts of the other. This is
+why reusing a one-time pad key completely breaks the security.
+
+\paragraph{Stream Ciphers}
+
+A stream cipher tries to make the One-Time Pad practical. Instead of
+sharing a key as long as the message, both parties share a short secret
+seed $s$. A pseudo-random generator then expands this seed into a long
+keystream:
+
+\[
+k_1, k_2, \ldots = PRG(s)
+\]
+
+The message is then encrypted by XORing it with the generated keystream.
+The security depends on the quality of the pseudo-random generator and
+on the secrecy of the seed.
+
+\paragraph{Initialization Vector}
+
+To avoid generating the same keystream twice, stream ciphers use an
+\emph{Initialization Vector} (IV). The IV is a fresh value used together
+with the key to generate a different keystream for each message.
+
+The IV does not need to be secret, but the same IV must never be reused
+with the same key.
+
+\paragraph{Block Ciphers}
+
+A block cipher encrypts fixed-size blocks of plaintext. If the plaintext
+is shorter than one block, padding must be added.
+
+Common examples are:
+
+\begin{itemize}
+    \item DES\@: 64-bit blocks, 56-bit key;
+    \item 3DES\@: 64-bit blocks, 168-bit key (see LELEC2760 why 2DES doesn't exist ;-);
+    \item AES\@: 128-bit blocks, keys of 128, 192, or 256 bits.
+\end{itemize}
+
+Block ciphers are not directly used on arbitrary-length messages. They
+must be used with a \emph{mode of operation} which defines how a block cipher is applied to messages larger than one block. Examples include ECB\@, CBC\@, CFB\@, OFB\@, and CTR\@.
+
+
+\paragraph{Cipher Block Chaining}
+
+In Cipher Block Chaining (CBC), each plaintext block is XORed with the
+previous ciphertext block then encrypted. This makes identical
+plaintext blocks encrypt to different ciphertext blocks.
+
+For the first block, there is no previous ciphertext block, so an
+Initialization Vector is used. As with stream ciphers, the IV must be
+fresh for each message.
+
+
+\paragraph{Iterated Block Ciphers}
+
+Many block ciphers are built by repeatedly applying a round function.
+The original key is expanded into several round keys, and each round
+transforms the internal state.
+
+For example:
+
+\begin{itemize}
+    \item DES uses 16 rounds;
+    \item 3DES applies DES three times;
+    \item AES-128 uses 10 rounds.
+\end{itemize}
+
+\paragraph{DES}
+
+DES is an old block cipher with a 56-bit key and 64-bit blocks. It uses
+a Feistel structure, where each block is split into two halves $L_i$ and
+$R_i$:
+
+\[
+R_i = f_i(R_{i-1}) \oplus L_{i-1}
+\]
+
+\[
+L_i = R_{i-1}
+\]
+
+Feistel networks are useful because they are invertible, even if the
+round function itself is not. Decryption is done by going through the network with the round keys in reverse order.
+
+DES is no longer secure because its 56-bit key is too short and can be
+brute-forced.
+
+\paragraph{3DES}
+
+3DES improves DES by applying DES three times with different keys:
+
+\[
+E_{3DES}((k_1,k_2,k_3),m)
+=
+E(k_1, D(k_2, E(k_3,m)))
+\]
+
+It is much stronger than DES, but also slower. Although it uses three
+56-bit keys, its effective security is about 112 bits because of
+meet-in-the-middle attacks.
+
+\paragraph{AES}
+
+AES is the modern standard block cipher. It has a block size of 128 bits and supports three key sizes:
+
+\begin{itemize}
+    \item AES-128: 10 rounds;
+    \item AES-192: 12 rounds;
+    \item AES-256: 14 rounds.
+\end{itemize}
+
+
+% \paragraph{Stream Ciphers vs Block Ciphers}
+
+% Stream ciphers encrypt data symbol by symbol and can start immediately,
+% without waiting for a full block. However, modifying individual parts of
+% the ciphertext can sometimes have predictable effects.
+
+% Block ciphers encrypt data block by block. They are often more robust
+% against local modifications, but they require padding for short messages
+% and errors can affect an entire block or more, depending on the mode.
+
+\paragraph{Key Management}
+
+A major problem in symmetric cryptography is key distribution. If every
+pair of users needs a different shared key, then a system with $n$ users
+requires:
+
+\[
+O(n^2)
+\]
+
+keys.
+
+A possible solution is to use a \emph{Trusted Third Party} (TTP). Each
+user shares one key with the TTP, and the TTP helps users establish
+session keys for communication.
+
+\paragraph{Replay Attacks}
+
+A protocol can still be insecure even if encryption is used. For example,
+an attacker may record an encrypted message and replay it later.
+
+To prevent replay attacks, protocols usually include nonces, timestamps,
+or sequence numbers, so that old messages cannot be reused successfully.
+
+\subsection{Public-Key Cryptography}
+
+In public-key cryptography, each user has a pair of keys: a public key
+$pk$ and a private key $sk$. The public key can be shared with everyone,
+while the private key must remain secret. To send a confidential message
+to Bob, Alice encrypts the message using Bob's public key, and only Bob
+can decrypt it using his private key.
+
+\[
+E(pk_{Bob}, m) = c
+\]
+
+\[
+D(sk_{Bob}, c) = m
+\]
+
+A public-key cryptosystem consists of three algorithms:
+
+\begin{itemize}
+    \item $G$: generates a key pair $(pk, sk)$,
+    \item $E(pk,m)$: encrypts a message using the public key,
+    \item $D(sk,c)$: decrypts a ciphertext using the private key.
+\end{itemize}
+
+Correctness requires that decrypting an encrypted message gives back the
+original message:
+
+\[
+D(sk, E(pk,m)) = m
+\]
+
+\paragraph{Advantages and Drawbacks}
+
+The main advantage is key management: each user only needs one key pair
+to communicate with many other users. However, public-key cryptography is
+much slower than symmetric-key cryptography and usually relies on more
+complex mathematical assumptions.
+
+\paragraph{RSA}
+
+RSA is a classical public-key cryptosystem. Its security relies on the
+difficulty of deriving the private key from the public key, which is
+related to the difficulty of factoring a large number $n$.
+
+RSA key generation works as follows:
+
+\begin{enumerate}
+    \item choose two large primes $p$ and $q$,
+    \item compute $n = p \cdot q$,
+    \item compute $\varphi(n) = (p-1)(q-1)$,
+    \item choose $e$ such that $\gcd(e,\varphi(n)) = 1$,
+    \item compute $d$ such that $d \cdot e \equiv 1 \pmod{\varphi(n)}$.
+\end{enumerate}
+
+The public key is $(e,n)$ and the private key is $(d,n)$. The values
+$p$, $q$, and $\varphi(n)$ must remain secret or be deleted after key
+generation. Otherwise one could compute $d$ from $\varphi(n)$ and $e$.
+
+Encryption and decryption are defined as:
+
+\[
+E((e,n),m) = m^e \bmod n
+\]
+
+\[
+D((d,n),c) = c^d \bmod n
+\]
+
+The reason this works is that $d$ is chosen as the inverse of $e$ modulo
+$\varphi(n)$, so decrypting reverses the encryption operation.
+
+\paragraph{Security of Textbook RSA}
+
+RSA in this simple form should not be used directly. It is deterministic:
+the same message always produces the same ciphertext. This allows an
+attacker to recognize repeated messages.
+
+It also has algebraic structure. In particular, textbook RSA is
+multiplicatively homomorphic:
+
+\[
+E(pk, m_1 \cdot m_2) = E(pk,m_1) \cdot E(pk,m_2)
+\]
+
+This can leak information and enable attacks. Practical RSA therefore
+uses padding and randomness.
+
+\paragraph{Hybrid Encryption}
+
+In practice, RSA is not used to encrypt long messages directly because
+it is too slow and can only encrypt messages smaller than the modulus
+$n$. Instead, RSA is usually combined with symmetric cryptography.
+
+A typical hybrid scheme works as follows:
+
+\begin{enumerate}
+    \item generate a random secret value $x$,
+    \item encrypt it with RSA\@: $y = E_{RSA}(pk,x)$,
+    \item derive a symmetric key $k = H(x)$,
+    \item encrypt the message with a symmetric cipher:
+    \[
+    c = E_{sym}(k,m)
+    \]
+    \item send $(y,c)$.
+\end{enumerate}
+
+The receiver decrypts $y$ with their private key to recover $x$, derives
+the same symmetric key $k = H(x)$, and then decrypts $c$.
+
+\subsection{Diffie-Hellman Key Exchange}
+
+Diffie-Hellman (DH) is a protocol that allows two parties to agree on a
+shared secret over an insecure channel. This shared secret can then be
+used as a key for symmetric encryption.
+
+The protocol works as follows:
+
+\begin{enumerate}
+    \item Alice and Bob agree on a large prime $p$ and a generator $g$ (not needed to be private).
+    \item Alice chooses a secret value $a$ and sends:
+    \[
+    X = g^a \bmod p
+    \]
+    \item Bob chooses a secret value $b$ and sends:
+    \[
+    Y = g^b \bmod p
+    \]
+    \item Alice computes:
+    \[
+    Y^a \bmod p = g^{ab} \bmod p
+    \]
+    \item Bob computes:
+    \[
+    X^b \bmod p = g^{ab} \bmod p
+    \]
+\end{enumerate}
+
+Both parties obtain the same shared secret $g^{ab} \bmod p$, while an
+eavesdropper only sees $p$, $g$, $g^a \bmod p$ and $g^b \bmod p$.
+
+\paragraph{Security of Diffie-Hellman}
+
+The security of DH is based on the difficulty of the discrete logarithm
+problem. Computing $g^a \bmod p$ is easy, but recovering $a$ from
+$g$, $p$ and $g^a \bmod p$ is hard when $p$ is large.
+
+However, it is vulnerable to Man-in-the-Middle attacks where an attacker can intercept $g^a$ and $g^b$ and send both Alice and Bob $g^c$ each time decrypting and re-encrypting.
+
+If a fresh DH exchange is performed for every connection, the protocol
+provides \emph{forward secrecy}: even if a long-term secret is leaked
+later, previously recorded sessions remain protected.
+
+\paragraph{Elliptic Curve Diffie-Hellman}
+
+Elliptic Curve Diffie-Hellman (ECDH) is a variant of DH based on the
+elliptic curve discrete logarithm problem. Instead of working with
+integers modulo $p$, it works with points on an elliptic curve.
+
+ECDH provides similar security with much shorter keys. 
+
+\subsection{Cryptographic Hash Functions}
+
+A hash function maps an input of arbitrary length to a fixed-size output:
+
+\[
+H : {\{0,1\}}^* \rightarrow {\{0,1\}}^n
+\]
+
+A cryptographic hash function should be hard to invert and should behave
+like a random function. The output is often called a \emph{message
+digest}.
+
+Examples include SHA-256 and SHA-512. Older functions such as MD5 and
+SHA-1 are no longer recommended because practical attacks have been
+found.
+
+\paragraph{Desired Properties}
+
+A cryptographic hash function should satisfy the following properties:
+
+\begin{itemize}
+    \item \textbf{Preimage resistance:} given $y$, it should be hard to
+    find $m$ such that $H(m)=y$.
+    \item \textbf{Collision resistance:} it should be hard to find two
+    different messages $m_1$ and $m_2$ such that:
+    \[
+    H(m_1)=H(m_2)
+    \]
+    \item \textbf{Random-looking output:} the hash value should be
+    indistinguishable from a random $n$-bit string.
+\end{itemize}
+
+\paragraph{Birthday Paradox}
+
+For an $n$-bit hash function, there are $2^n$ possible outputs. Because
+of the birthday paradox, a collision can be found after about
+$2^{n/2}$ trials, not $2^n$.
+
+For example, SHA-1 produces 160-bit hashes, so generic collision search
+would take about $2^{80}$ trials. Since stronger attacks exist, SHA-1 is
+not recommended anymore.
+
+\paragraph{SHA-256}
+
+% SHA-256 produces a 256-bit hash. Like many hash functions, it is based on
+% the Merkle-Damg{\aa}rd construction: the message is split into blocks,
+% and a compression function is applied repeatedly to update an internal
+% state.
+
+\subsection{Message Authentication Codes}
+
+A Message Authentication Code (MAC) is used to verify the integrity and
+authenticity of a message using a shared secret key.
+
+A MAC consists of:
+
+\[
+S : K \times M \rightarrow T
+\]
+
+\[
+V : K \times M \times T \rightarrow \{\text{yes},\text{no}\}
+\]
+
+The sender computes a tag:
+
+\[
+t = S(k,m)
+\]
+
+and sends $(m,t)$. The receiver checks the tag using the same key. If the
+verification fails, the message is rejected.
+
+\paragraph{Building MACs from Hash Functions}
+
+A naive idea would be to build a MAC as:
+
+\[
+S(k,m)=H(m || k)
+\]
+
+or:
+
+\[
+S(k,m)=H(k || m)
+\]
+
+However, these constructions are insecure with common hash functions
+based on Merkle-Damg{\aa}rd. In particular, $H(k||m)$ may be vulnerable
+to length-extension attacks, where an attacker can extend the message
+and compute a valid tag without knowing the key.
+
+\paragraph{HMAC}
+
+HMAC is the standard way to build a MAC from a hash function. Its basic
+idea is to hide the intermediate hash value from the attacker:
+
+\[
+S(k,m)=H(k || H(k || m))
+\]
+
+The real construction is slightly more complex, but the intuition is that
+the key is mixed into the hash computation in a safer way. A common
+example is HMAC-SHA256.
+

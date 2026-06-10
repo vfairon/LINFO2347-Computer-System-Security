@@ -79,14 +79,70 @@
 \contentsline {paragraph}{Connection Limits}{20}{section*.53}%
 \contentsline {paragraph}{Complete Example}{20}{section*.54}%
 \contentsline {subsection}{\numberline {10.4}Zones}{21}{subsection.10.4}%
-\contentsline {section}{\numberline {11}IDS}{21}{section.11}%
-\contentsline {subsection}{\numberline {11.1}Host-based IDS vs Network-based IDS}{21}{subsection.11.1}%
-\contentsline {paragraph}{Host-based IDS (HIDS).}{21}{section*.55}%
-\contentsline {paragraph}{Network-based IDS (NIDS).}{22}{section*.56}%
-\contentsline {subsection}{\numberline {11.2}DPI-based IDS: Snort}{22}{subsection.11.2}%
-\contentsline {subsection}{\numberline {11.3}DPI Performance}{22}{subsection.11.3}%
-\contentsline {subsection}{\numberline {11.4}Measuring Performance}{23}{subsection.11.4}%
-\contentsline {paragraph}{Classification}{23}{section*.57}%
-\contentsline {subsubsection}{\numberline {11.4.1}Confusion Matrix}{23}{subsubsection.11.4.1}%
-\contentsline {paragraph}{Important distinction.}{24}{section*.58}%
-\contentsline {subsubsection}{\numberline {11.4.2}Tuning the IDS}{24}{subsubsection.11.4.2}%
+\contentsline {subsection}{\numberline {10.5}Network Address Translation (NAT)}{21}{subsection.10.5}%
+\contentsline {paragraph}{Outgoing Packets}{21}{section*.55}%
+\contentsline {paragraph}{Incoming Packets}{21}{section*.56}%
+\contentsline {paragraph}{Port Forwarding}{21}{section*.57}%
+\contentsline {paragraph}{Advantages}{21}{section*.58}%
+\contentsline {paragraph}{Drawbacks}{21}{section*.59}%
+\contentsline {paragraph}{NAT and Security}{21}{section*.60}%
+\contentsline {paragraph}{NAT Exhaustion}{21}{section*.61}%
+\contentsline {paragraph}{NAT and IPv6}{22}{section*.62}%
+\contentsline {section}{\numberline {11}IDS}{22}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Host-based IDS vs Network-based IDS}{22}{subsection.11.1}%
+\contentsline {paragraph}{Host-based IDS (HIDS).}{22}{section*.63}%
+\contentsline {paragraph}{Network-based IDS (NIDS).}{23}{section*.64}%
+\contentsline {subsection}{\numberline {11.2}DPI-based IDS: Snort}{23}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}DPI Performance}{23}{subsection.11.3}%
+\contentsline {subsection}{\numberline {11.4}Measuring Performance}{24}{subsection.11.4}%
+\contentsline {paragraph}{Classification}{24}{section*.65}%
+\contentsline {subsubsection}{\numberline {11.4.1}Confusion Matrix}{24}{subsubsection.11.4.1}%
+\contentsline {paragraph}{Important distinction.}{25}{section*.66}%
+\contentsline {subsubsection}{\numberline {11.4.2}Tuning the IDS}{25}{subsubsection.11.4.2}%
+\contentsline {section}{\numberline {12}Spam }{25}{section.12}%
+\contentsline {paragraph}{How to send spam ?}{25}{section*.67}%
+\contentsline {paragraph}{Mail Filtering}{26}{section*.68}%
+\contentsline {paragraph}{SPF (Sender Policy Framework)}{26}{section*.69}%
+\contentsline {paragraph}{DKIM (DomainKeys Identified Mail)}{26}{section*.70}%
+\contentsline {paragraph}{DMARC}{26}{section*.71}%
+\contentsline {paragraph}{Blacklists and Greylisting}{26}{section*.72}%
+\contentsline {paragraph}{Bayesian Spam Filtering}{26}{section*.73}%
+\contentsline {paragraph}{Remarks}{27}{section*.74}%
+\contentsline {section}{\numberline {13}Botnets}{27}{section.13}%
+\contentsline {paragraph}{Command and Control}{27}{section*.75}%
+\contentsline {paragraph}{Uses of Botnets}{27}{section*.76}%
+\contentsline {paragraph}{Architectures}{27}{section*.77}%
+\contentsline {paragraph}{Resilience Techniques}{27}{section*.78}%
+\contentsline {paragraph}{Fighting Botnets}{27}{section*.79}%
+\contentsline {paragraph}{Attack Economy}{27}{section*.80}%
+\contentsline {section}{\numberline {14}Cryptography}{27}{section.14}%
+\contentsline {paragraph}{What cryptography is not}{28}{section*.81}%
+\contentsline {subsection}{\numberline {14.1}Symmetric-Key Cryptography}{28}{subsection.14.1}%
+\contentsline {paragraph}{Perfect Security}{28}{section*.82}%
+\contentsline {paragraph}{One-Time Pad}{28}{section*.83}%
+\contentsline {paragraph}{Attack on Reused One-Time Pad Keys}{28}{section*.84}%
+\contentsline {paragraph}{Stream Ciphers}{29}{section*.85}%
+\contentsline {paragraph}{Initialization Vector}{29}{section*.86}%
+\contentsline {paragraph}{Block Ciphers}{29}{section*.87}%
+\contentsline {paragraph}{Cipher Block Chaining}{29}{section*.88}%
+\contentsline {paragraph}{Iterated Block Ciphers}{29}{section*.89}%
+\contentsline {paragraph}{DES}{30}{section*.90}%
+\contentsline {paragraph}{3DES}{30}{section*.91}%
+\contentsline {paragraph}{AES}{30}{section*.92}%
+\contentsline {paragraph}{Key Management}{30}{section*.93}%
+\contentsline {paragraph}{Replay Attacks}{30}{section*.94}%
+\contentsline {subsection}{\numberline {14.2}Public-Key Cryptography}{30}{subsection.14.2}%
+\contentsline {paragraph}{Advantages and Drawbacks}{31}{section*.95}%
+\contentsline {paragraph}{RSA}{31}{section*.96}%
+\contentsline {paragraph}{Security of Textbook RSA}{31}{section*.97}%
+\contentsline {paragraph}{Hybrid Encryption}{32}{section*.98}%
+\contentsline {subsection}{\numberline {14.3}Diffie-Hellman Key Exchange}{32}{subsection.14.3}%
+\contentsline {paragraph}{Security of Diffie-Hellman}{32}{section*.99}%
+\contentsline {paragraph}{Elliptic Curve Diffie-Hellman}{33}{section*.100}%
+\contentsline {subsection}{\numberline {14.4}Cryptographic Hash Functions}{33}{subsection.14.4}%
+\contentsline {paragraph}{Desired Properties}{33}{section*.101}%
+\contentsline {paragraph}{Birthday Paradox}{33}{section*.102}%
+\contentsline {paragraph}{SHA-256}{33}{section*.103}%
+\contentsline {subsection}{\numberline {14.5}Message Authentication Codes}{33}{subsection.14.5}%
+\contentsline {paragraph}{Building MACs from Hash Functions}{34}{section*.104}%
+\contentsline {paragraph}{HMAC}{34}{section*.105}%

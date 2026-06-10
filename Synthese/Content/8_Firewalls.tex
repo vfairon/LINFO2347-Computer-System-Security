@@ -149,3 +149,70 @@ table ip filter {
 The order of rules is important: NFTables evaluates rules from top to bottom and stops once a final verdict (\texttt{accept}, \texttt{drop}, etc.) is reached.
 \subsection{Zones}
 dont get what we need to know
+
+
+\subsection{Network Address Translation (NAT)}
+
+NAT allows multiple hosts in a private network to share a single public
+IPv4 address. It achieves this by modifying outgoing packets and keeping
+a translation table that maps internal addresses and ports to external
+ones.
+
+\paragraph{Outgoing Packets}
+For an outgoing packet, the NAT replaces:
+
+\begin{itemize}
+    \item the source IP address by its public IP address,
+    \item the source port by an unused external port.
+\end{itemize}
+
+The NAT stores the mapping in a translation table so that future packets
+belonging to the same connection can be translated consistently.
+
+\paragraph{Incoming Packets}
+When a reply arrives, the NAT consults its translation table and
+restores the original destination IP address and port. Packets that do
+not match an existing entry are typically dropped.
+
+\paragraph{Port Forwarding}
+Static entries can be added to the translation table to make internal
+services accessible from the Internet. For example, traffic arriving on
+port 80 can be forwarded to a web server running on
+\texttt{10.0.0.1:8080}.
+
+\paragraph{Advantages}
+\begin{itemize}
+    \item Conserves public IPv4 addresses.
+    \item Internal hosts are not directly reachable from the Internet.
+    \item Can randomize source ports, making certain spoofing attacks
+          more difficult.
+\end{itemize}
+
+\paragraph{Drawbacks}
+\begin{itemize}
+    \item Breaks the separation between network and transport layers.
+    \item Makes debugging and forensic analysis more difficult.
+    \item Breaks the Internet's end-to-end principle.
+    \item Can interfere with protocols that embed IP addresses or port
+          numbers in application data.
+\end{itemize}
+
+\paragraph{NAT and Security}
+NAT is not a firewall. Although unsolicited incoming connections are
+usually blocked because no translation entry exists, every active NAT
+mapping effectively creates a temporary opening through which packets
+can return.
+
+\paragraph{NAT Exhaustion}
+An attacker inside a network may attempt to create a large number of
+connections, forcing the NAT to allocate many translation entries and
+potentially exhausting its resources (memory or available ports).
+
+\paragraph{NAT and IPv6}
+NAT was originally introduced to mitigate IPv4 address exhaustion.
+Because IPv6 provides a vastly larger address space, NAT is generally no
+longer required and each host can be assigned a globally routable
+address. However, NPTv6 (Network Prefix Translation) can still be used
+to translate only the ISP-assigned network prefix while preserving the
+host identifier. This allows internal IPv6 addresses to remain stable
+even when the public prefix changes.
