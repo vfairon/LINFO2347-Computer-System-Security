@@ -1,0 +1,203 @@
+\section{IDS}
+Here are three detection methods : 
+\begin{itemize}
+    \item \textbf{Signature/knowledge} Looks for patters or signatures of known attacks (example block HTTP request with \texttt{x' AND email IS NULL;--}). Difficult to detect new attaks but efficient when it is known
+    \item \textbf{Anomaly-based IDS} The IDS first defines what ``normal'' behavior looks like, then detects deviations from it. (eg : alert if one IP sends more than 100 mails per day). But defining normality is hard and normality changes over time.
+    \item \textbf{Specification-based IDS} : checks whether the system follows a formally specified behavior. It is a special case of anomaly detection where ``normal'' is not learned statistically but explicitly specified. But formal specification are rare.
+
+\end{itemize}
+
+Once an intrusion is detected, the IDS can react in two main ways:
+
+\begin{itemize}
+    \item \textbf{Passive reaction:} only raise an alert, e.g. send an email to the administrator or log the event.
+    \item \textbf{Active reaction:} try to stop the attack, e.g. block an IP address for 5 minutes, disable a user account, reconfigure the firewall, reduce service, etc.
+\end{itemize}
+
+Active IDS are useful in large networks because manual reaction to every alert is not scalable. However, they can be dangerous if they make wrong decisions: an innocent user may be blocked. IDS can also be taken advantage of by spoofing an inoccent ip and getting it banned.
+
+\subsection{Host-based IDS vs Network-based IDS}
+\paragraph{Host-based IDS (HIDS).}
+A host-based IDS runs on the host it monitors.
+
+Examples:
+\begin{itemize}
+    \item an anti-virus on a computer,
+    \item a spam filter inside a local mail client,
+    \item a webserver checking requests before executing them.
+\end{itemize}
+
+It can source its data by looking at incoming/outgoing traffic, log files, incoming emails,\dots
+
+
+\textbf{Pros:}
+\begin{itemize}
+    \item very detailed view of what happens on the host,
+    \item encrypted traffic is not necessarily a problem if the IDS runs after decryption, e.g. inside the webserver after TLS termination.
+\end{itemize}
+
+\textbf{Cons:}
+\begin{itemize}
+    \item consumes CPU and memory on the monitored host,
+    \item only sees one host, not the global network picture,
+\end{itemize}
+
+\paragraph{Network-based IDS (NIDS).}
+A network-based IDS monitors traffic at a point in the network. By receiving a copy of the traffic using a router or switch mirror port, a \textbf{network tap}.
+
+A NIDS can observe traffic at different levels:
+\begin{itemize}
+    \item \textbf{Deep Packet Inspection (DPI):} inspect packet payloads and protocols in detail.
+    \item \textbf{Packet headers:} inspect IP addresses, ports, protocol, flags, etc.
+    \item \textbf{Flow records:} aggregated communication summaries instead of full packets.
+\end{itemize}
+
+\textbf{Pros:}
+\begin{itemize}
+    \item can run on a dedicated machine,
+    \item can monitor a whole network,
+    \item flow monitoring scales well to high-speed networks.
+\end{itemize}
+
+\textbf{Cons:}
+\begin{itemize}
+    \item only sees network traffic, not what happens inside hosts,
+    \item DPI is expensive at high speed,
+    \item DPI cannot inspect encrypted payloads such as HTTPS,
+    \item flow records are useful for scans, brute-force and DoS attacks, but not for attacks where the payload matters, e.g. buffer overflows or SQL injection.
+\end{itemize}
+
+
+
+\subsection{DPI-based IDS: Snort}
+
+\textbf{Snort} is a DPI-based (Deep Packet Inspection) IDS for network traffic. It compares monitored traffic against a database of rules. If a rule matches, an alert is raised. It can be deployed either as a host-based IDS , or as a network-based IDS.
+
+% A very simple Snort rule is:
+
+% \begin{lstlisting}[language=bash]
+% alert icmp any any -> any any \
+%     (msg: "ICMP packet detected!"; sid: 1;)
+% \end{lstlisting}
+
+% Intuition:
+% \begin{itemize}
+%     \item \texttt{alert}: action to take,
+%     \item \texttt{icmp}: protocol,
+%     \item \texttt{any any -> any any}: any source IP/port to any destination IP/port,
+%     \item \texttt{msg}: message displayed in the alert,
+%     \item \texttt{sid}: Snort rule identifier.
+% \end{itemize}
+
+Rules can include L3/4 protocols, ip addresses, state, payload size, payload content, depth, metadata, etc.
+
+\subsection{DPI Performance}
+
+DPI is expensive because the IDS must do much more than just read packet headers:
+\begin{itemize}
+    \item parse many protocols, e.g. UDP, TCP, DNS, HTTP,
+    \item reassemble streams, otherwise an attacker could split the malicious payload across several packets,
+    \item keep state, e.g. remember that a TCP \texttt{SYN} was seen before accepting that a \texttt{SYN+ACK} belongs to that connection,
+    \item compare traffic against many rules.
+\end{itemize}
+
+To improve speed and detection performance, we can use use several IDS and even create a hierarchy (small fast IDS forward suspicious traffic to heavier ones).
+
+\subsection{Measuring Performance}
+\paragraph{Classification} an IDS can be seen as a classification problem and thus measuring its performance with the same tools.
+
+Ideally, normal and malicious samples are clearly separated. In reality they often overlap, so no perfect threshold exists and the IDS will make errors.
+
+To evaluate an IDS, we need a \textbf{ground truth}: a labeled dataset where we know for each sample whether it is normal or malicious. This is hard because the dataset should contain realistic normal data and many different attacks, including attacks that may not even be known yet.
+
+\subsubsection{Confusion Matrix}
+
+When comparing IDS alerts with the ground truth labels, we get four possible cases:
+
+\begin{center}
+\begin{tabular}{c|c|c}
+ & IDS says normal & IDS says malicious \\
+\hline
+Actually normal & True Negative (TN) & False Positive (FP) \\
+Actually malicious & False Negative (FN) & True Positive (TP) \\
+\end{tabular}
+\end{center}
+
+Intuition:
+\begin{itemize}
+    \item \textbf{TP}: attack correctly detected.
+    \item \textbf{TN}: normal traffic correctly ignored.
+    \item \textbf{FP}: false alert on normal traffic.
+    \item \textbf{FN}: attack missed by the IDS.
+\end{itemize}
+
+False positives are expensive because humans may need to check the alerts. False negatives are security risks because attacks remain unnoticed.
+
+Let:
+\begin{itemize}
+    \item $P = TP + FN$: number of malicious samples,
+    \item $N = TN + FP$: number of normal samples.
+\end{itemize}
+
+Common IDS metrics:
+
+\begin{itemize}
+    \item \textbf{True Positive Rate / Recall:}
+    \[
+        TPR = \frac{TP}{P} = \frac{TP}{TP + FN}
+    \]
+
+    \item \textbf{False Positive Rate:}
+    \[
+        FPR = \frac{FP}{N} = \frac{FP}{FP + TN}
+    \]
+
+    \item \textbf{True Negative Rate:}
+    \[
+        TNR = \frac{TN}{N} = 1 - FPR
+    \]
+
+    \item \textbf{False Negative Rate:}
+    \[
+        FNR = \frac{FN}{P} = 1 - TPR
+    \]
+
+    \item \textbf{Precision:}
+    \[
+        Precision = \frac{TP}{TP + FP}
+    \]
+
+    \item \textbf{Accuracy:}
+    \[
+        Accuracy = \frac{TP + TN}{P + N}
+    \]
+
+    \item \textbf{F1 score:}
+    \[
+        F_1 = \frac{2TP}{2TP + FP + FN}
+    \]
+	the harmonic mean of precision and recall.
+\end{itemize}
+
+\paragraph{Important distinction.}
+Recall answers: ``among real attacks, how many did we detect?''  
+Precision answers: ``among alerts, how many were real attacks?''
+
+\subsubsection{Tuning the IDS}
+
+
+Many IDS rules depend on thresholds. They must be adapted to the target system. A threshold that is normal for a big network may be abnormal for a small one.
+
+Changing the threshold changes the compromise between FP and FN:
+\begin{itemize}
+    \item strict threshold $\rightarrow$ more alerts, higher TP, but also higher FP,
+    \item tolerant threshold $\rightarrow$ fewer false alerts, but more missed attacks.
+\end{itemize}
+
+The \textbf{ROC curve} visualizes this tradeoff by plotting:
+\begin{itemize}
+    \item x-axis: False Positive Rate,
+    \item y-axis: True Positive Rate.
+\end{itemize}
+
+A good IDS has high TPR and low FPR, so its ROC curve should be close to the top-left corner. 

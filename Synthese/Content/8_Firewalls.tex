@@ -1,0 +1,151 @@
+\section{Firewalls}
+\subsection{Classification}
+\begin{itemize}
+    \item Layer of operation : 
+    \begin{itemize}
+        \item Network layer (IPv4,6) (do not allow traffic from ip...)
+        \item Transport layer (UDP, TCP) (only allow connection to TCP port 80)
+        \item Application layer (HTTP,...) (Do not allow HTTP Post)
+    \end{itemize}
+    \item Internal state :
+    \begin{itemize}
+        \item \textbf{Stateless} — filters each packet in isolation with no knowledge of existing connections (e.g. allow TCP packets from host A to host B). Rules are evaluated in order and the first match is applied, typically ending with a default deny-all. The key limitation is that a stateless firewall has no concept of connection state — it cannot distinguish between a packet that initiated a connection and one that is a reply to it. For example, a rule allowing outbound TCP from the company network would also need to allow inbound TCP replies, but the firewall cannot tell a reply apart from a connection attempts.
+        \item \textbf{Stateful} — maintains an internal table of active connections. When a packet arrives, the firewall checks whether it belongs to a known connection and allows it through accordingly. This solves the limitation of stateless firewalls: a reply to an outbound TCP connection is recognized as such and allowed, while a genuinely unsolicited incoming packet is not. Since they must track every connection they are more resource intensive. Entries are removed based on observed packets (e.g. TCP FIN) or timeouts. Note that some complex protocols like FTP are non-trivial to handle, as the server opens a separate data connection back to the client, which a stateful firewall unaware of application-layer protocols would incorrectly reject.    
+    \end{itemize}
+\end{itemize}
+
+\subsection{Location of a firewall}
+You have different possibilities : 
+\begin{itemize} 
+    \item As its own entity between the untrested and internal network (centralized, easy to manage but doesn't protect against internal attacks)
+    \item As a personal firewall running on hosts (protects against internal attacks but high overhead)
+    \item Use a Demilitarized Zone (DMZ) to separate the services needed to be externally accessible and the internal network. Two firewalls are thus needed (the first one protects the DMZ from the internet and second the internal network from the internet and the potentially infected DMZ)
+    \item On Proxies (either \textbf{transparent} the client has no idea it is talking to a proxy or \textbf{reverse proxies} the client has no knowledge the server exists). They can operate as application firewalls. Reverse proxies can even handle authentication of clients or DDoS protection (like Cloudflare's).
+\end{itemize}
+
+\subsection{Syntax of NFTables Rules}
+
+NFTables is the modern Linux packet filtering framework, replacing the older \texttt{iptables}. Rules are organized into \textbf{tables} (grouping rules by family, e.g. \texttt{ip}, \texttt{ip6}) and \textbf{chains} (sequences of rules attached to a \textbf{hook} such as \texttt{input}, \texttt{output}, or \texttt{forward}). Each rule matches packets based on criteria and applies a verdict such as \texttt{accept}, \texttt{drop}, or \texttt{reject}.
+
+A rule is generally composed of:
+
+\begin{center}
+\texttt{[conditions] [action]}
+\end{center}
+
+For example:
+
+\begin{lstlisting}[language=bash]
+tcp dport 22 accept
+\end{lstlisting}
+
+matches packets satisfying:
+
+\begin{itemize}
+    \item \texttt{tcp}: the packet uses the TCP protocol.
+    \item \texttt{dport 22}: the destination port is 22 (SSH).
+    \item \texttt{accept}: the packet is accepted.
+\end{itemize}
+
+Additional matching criteria can be added:
+
+\begin{itemize}
+    \item Source \& Destination IP address:
+\begin{lstlisting}[language=bash]
+ip saddr 192.168.1.10 daddr 10.0.0.5 tcp dport 22 accept
+\end{lstlisting}
+
+    \item Several ports:
+\begin{lstlisting}[language=bash]
+tcp dport {22,80,443} accept
+\end{lstlisting}
+\end{itemize}
+
+\paragraph{Connection Tracking States}
+
+NFTables integrates rules to depend on the state of a connection (careful, works as well for UDP):
+
+\begin{itemize}
+    \item \texttt{new}: first packet of a new connection.
+    \item \texttt{established}: packet belonging to an already accepted connection.
+    \item \texttt{related}: packet related to an existing connection (e.g. FTP data connection).
+    \item \texttt{invalid}: packet that cannot be associated with any valid connection.
+\end{itemize}
+
+Example:
+
+\begin{lstlisting}[language=bash]
+tcp dport {22,23} ip saddr 129.168.1.1 ct state established,related accept
+\end{lstlisting}
+
+Accept packets belonging to already established connections.
+
+\paragraph{Connection Limits}
+
+NFTables can limit the number of simultaneous connections using the Linux connection tracking subsystem (\texttt{conntrack}).
+
+A \emph{tracked connection} is an active communication that the kernel is currently monitoring. For TCP, opening multiple connections to the same service creates multiple tracked connections, even if the source and destination IP addresses remain the same.
+
+The \texttt{ct count} expression counts the number of currently tracked connections matching a rule.
+
+For example:
+\begin{lstlisting}[language=bash]
+tcp dport 80 ct count over 5 drop
+\end{lstlisting}
+
+
+means:
+
+\begin{itemize}
+    \item the packet uses TCP,
+    \item the destination port is 80,
+    \item more than 5 tracked connections currently match,
+    \item if the condition is satisfied, the packet is dropped.
+\end{itemize}
+
+
+Connection limits can be combined with other matching criteria. For example:
+
+\begin{lstlisting}[language=bash]
+ip saddr 192.168.1.0/24 tcp dport 80 \
+    ct count over 5 drop
+\end{lstlisting}
+
+
+\paragraph{Complete Example}
+
+The following ruleset:
+
+\begin{itemize}
+    \item drops all incoming traffic by default,
+    \item accepts already established connections,
+    \item drops invalid packets,
+    \item allows SSH,
+    \item allows HTTP but limits each source host to at most 5 concurrent connections.
+\end{itemize}
+
+\begin{lstlisting}[language=bash]
+table ip filter {
+    chain input {
+        type filter hook input priority 0;
+        policy drop;
+
+        # Existing connections
+        ct state established,related accept
+
+        # Invalid packets
+        ct state invalid drop
+
+        # SSH
+        tcp dport 22 accept
+
+        # HTTP with connection limit
+        tcp dport 80 ct count over 5 drop
+        tcp dport 80 accept
+    }
+}
+\end{lstlisting}
+
+The order of rules is important: NFTables evaluates rules from top to bottom and stops once a final verdict (\texttt{accept}, \texttt{drop}, etc.) is reached.
+\subsection{Zones}
+dont get what we need to know

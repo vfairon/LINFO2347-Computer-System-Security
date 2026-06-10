@@ -1,0 +1,57 @@
+\section{Traffic Monitoring}
+What is being measured : 
+\begin{itemize}
+    \item \textbf{Low level metrics} such as QoS metrics (throughput, packet loss,...), port usage, packet payloads, IP addresses. \textbf{Easier} to collect.
+    \item \textbf{High level metrics} such as protocol/application usage, aivailability of services, services behaviors. \textbf{Harder} to collect.
+\end{itemize}
+
+There are two types of measurement : 
+\begin{itemize}
+    \item \textbf{Active Measurement} : Generation of probing traffic (additional load to the network) (eg : send pings, HTTP requests,...)
+    \item \textbf{Passive Measurement} : by observing existing traffic (on different links/routers/switches). But super heavy since A LOT of packets are captured.
+\end{itemize}
+
+To solve the issue of big packet load capturing, one can : 
+\begin{itemize}
+    \item Collect and process less information (only headers as often data is encrypted, aggregate by \textbf{flows} = same (SRC/Dest IP, Port and Layer 3 Protocols)) or even do \textbf{sampling}
+    \item Use dedicated hardware
+\end{itemize}
+
+\paragraph{Flow monitoring} can either be \textbf{part of the router} or a \textbf{standalone application} getting data from the router's mirror port or offline from files.
+Flow monitoring comes with a loss of information (no payload, details of packet header) but you still get the IP's, port numbers, sizes.
+
+\paragraph{Sampling} You can sample three different ways : 
+\begin{itemize}
+    \item\textbf{Systematic} sampling (only taking the $n$-th packet) is bad as it can align with periodic traffic patterns
+    \item \textbf{Random sampling} with a range (sampling every $m$ to $n$ each time changing), it is better
+    \item \textbf{Dynamical sampling} according do diverse criterions e.g. sampling large flows more frequently.
+\end{itemize}
+However, sampling introduces statistical error — all results are estimations with a certain confidence. Importantantly it underrepresents the small flows: missing one packet from a large flow causes a small error, but missing the only packet of a one-packet flow loses it entirely.
+
+
+NETFLOW PACKET.... really useful here ?
+
+
+\section{Honeypots and Network Telescopes}
+
+\paragraph{Honeypots.}
+A honeypot is a fake resource, made to appear vulnerable to attract attackers to identify them or analyze their techniques. Any contact with a honeypot is suspicious, since legitimate traffic has no reason to reach a non-existent service.
+
+Rather than exposing a real vulnerable server — which could be compromised and weaponized — honeypots emulate vulnerable systems at varying levels of fidelity:
+\begin{itemize}
+    \item \textbf{High-interaction honeypot} — fully imitates the behavior of a real server, or runs one in an isolated VM, providing a convincing target for detailed attack analysis.
+    \item \textbf{Low-interaction honeypot} — simply listens for incoming connections and accepts them without further interaction, sufficient for detecting scans.
+\end{itemize}
+
+Since many attackers actively probe whether a machine is a honeypot (checking for missing directories, unusual system responses, etc.), some honeypots are made highly complex to appear convincing — up to simulating entire company networks, known as \textbf{honeynets}.
+
+\paragraph{Related Approaches.}
+\begin{itemize}
+    \item \textbf{Tarpits} — honeypots that respond very slowly to incoming requests, tying up attacker resources and slowing down scans.
+    \item \textbf{Canary traps} — intentionally leaked secrets (e.g. a honeylink URL, or a fake password) designed to trigger an alert when accessed by an attacker.
+\end{itemize}
+
+\paragraph{Network Telescopes and Internet Background Radiation.}
+Even unused IP addresses constantly receive packets — a phenomenon known as \textbf{Internet background radiation}. Sources include attackers scanning for victims, misconfigured devices, and \textbf{backscatter} (SYN/ACK replies sent to spoofed source addresses during DDoS attacks). 
+
+A \textbf{network telescope} exploits this by passively monitoring large blocks of unused IP address space. Large-scale examples operate on \texttt{/9} and \texttt{/10} networks. Since no legitimate traffic should arrive at unused addresses, every received packet is a signal. Telescopes can be used to detect emerging attack trends (e.g. scans targeting newly discovered vulnerabilities), identify widespread misconfiguration, and indirectly observe DDoS attacks through their backscatter.

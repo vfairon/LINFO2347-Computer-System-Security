@@ -89,3 +89,101 @@ When \texttt{f()} returns:
 \item The saved FP is popped, restoring \texttt{g()}'s frame pointer.
 \item The return address is popped into the PC, resuming execution in \texttt{g()} right after the call.
 \end{enumerate}
+
+\section{Buffer Overflow's \& code injection}
+\subsection{The attacks}
+
+\paragraph{Base idea} is that sometimes, strings lenghts are not checked and so you can overwrite data that comes after.
+
+\begin{lstlisting}[language=C]
+char currentUser[8];
+int accessRight;
+void initUser(char *name) {
+    accessRight = 0; // no access right
+    strcpy(currentUser,name);
+}
+
+\end{lstlisting}
+Here since \texttt{accessRight} is defined just aftetr the \texttt{currentUser}, when giving your name, if it is longer than 8 bytes, it could overwrite the accessRight.
+
+\paragraph{Code Injection via Stack Overflow.}
+Beyond overwriting adjacent variables, an attacker can target the \textbf{return address} stored in the stack frame itself. Recall that a stack frame is laid out as follows (growing toward lower addresses):
+
+\begin{center}
+\begin{tabular}{|c|}
+\hline
+Parameters \\
+\hline
+Return address \\
+\hline
+Saved FP \\
+\hline
+Local variable (e.g. \texttt{char buf[8]}) \\
+\hline
+\end{tabular}
+\end{center}
+
+If no bounds check is performed on input copied into \texttt{buf}, an attacker can supply a string long enough to overflow through the saved FP and overwrite the return address. By crafting the input to contain:
+\begin{enumerate}
+    \item \textbf{Shellcode} — raw machine instructions for \texttt{execve("/bin/sh")} placed at the start of the buffer,
+    \item \textbf{Padding} — enough bytes to fill the buffer and saved FP,
+    \item \textbf{A forged return address} — pointing back to the start of the buffer,
+\end{enumerate}
+when the function returns, the CPU jumps to the attacker's code and spawns a shell.
+
+\paragraph{Address Predictability.}
+This attack requires knowing where the buffer sits in memory. Thanks to \textbf{virtual memory}, for a specific program and execution chain, the virtual memory will be the same. Attacker only needs running the program on its computer first.
+
+RAJOUTER LES INFOS DES TP/EXAMENS SI NÉCESSAIRE
+
+\subsection{Protection}
+There are several ways to protect against buffer overflow attacks:
+
+\begin{itemize}
+    \item \textbf{Use safer languages} — prefer languages that perform runtime bounds checking, preventing overflows entirely.
+
+    \item \textbf{Avoid unsafe C functions} — never use \texttt{strcpy}, \texttt{gets}, etc. Use length-aware alternatives such as \texttt{strncpy(buffer, s, sizeof(buffer))} instead.
+
+    \item \textbf{Validate external input} — always sanitize data coming from outside the program (truncating, range checking, rejecting unexpected values).
+
+    \item \textbf{Guard pages} — place protected memory regions around local variables so any access raises an exception. Effective but resource-intensive.
+
+    \item \textbf{Static analysis and fuzzing} — use tools to detect vulnerabilities before deployment, either by analyzing the code statically or by feeding it malformed inputs.
+
+    \item \textbf{Canaries} — place a known value between the local variables and the return address, and verify it has not changed before returning. \textbf{Random canaries} make this harder to bypass by using an unpredictable value. However, canaries have two fundamental limitations:
+    \begin{itemize}
+        \item An attacker who can guess or leak the canary value can include it in their payload and bypass the check entirely.
+        \item Canaries only protect the return address. Local variables sitting below the canary remain unprotected — an attacker can overwrite a pointer or function pointer variable and have it used \emph{before} the function returns, bypassing the canary check altogether.
+    \end{itemize}
+
+    \item \textbf{Address Space Layout Randomization (ASLR)} — modern operating systems randomize the base addresses of the stack, heap, and libraries, making it harder for an attacker to predict where shellcode or useful functions reside. However, ASLR has limits:
+    \begin{itemize}
+        \item On systems with small address spaces (16-bit or 32-bit embedded CPUs), the random gap cannot be large, making the number of possible layouts small enough to brute-force.
+        \item \textbf{Heap spraying} — if randomization is insufficient, an attacker can allocate large regions of memory on the heap (several MBytes) filled with shellcode, making it likely that a guessed address lands somewhere in that region.
+    \end{itemize}
+
+    \item \textbf{Data Execution Prevention (DEP)} — modern OSs mark stack memory pages as non-executable, so the CPU raises an exception if the instruction pointer ever points there. This defeats classic shellcode injection. Programs that generate code at runtime (e.g. JIT compilers) must first write code as data, then explicitly mark that region executable. However, DEP does not stop all attacks, as shown below.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{Figures/ROP.png}
+    \caption{Return-Oriented Programming}
+    \label{fig:stack_return}
+\end{figure}
+
+\paragraph{Return-Oriented Programming (ROP)} — if DEP prevents injecting new code, the attacker can instead reuse code already present in the process. Since library functions like \texttt{system} sit at predictable addresses when ASLR is inactive, the attacker can fake a function call purely by manipulating the stack:
+\begin{enumerate}
+    \item Arrange \texttt{"/bin/bash"} as an argument on the stack.
+    \item Overwrite the return address with the address of \texttt{system}.
+\end{enumerate}
+When the current function returns, the CPU jumps directly into \texttt{system} as if it were a normal call, spawning a shell without a single byte of injected code. This can be extended further by chaining multiple such calls together, each feeding into the next via carefully arranged stack contents. (See Figure \ref{fig:stack_return})
+
+\subsection{Fuzzing}
+\paragraph{Main idea} is to make the program crash by finding unexpected inputs. You can fuzz things from single functions to entire programs. There are two types of fuzzing : 
+\begin{itemize}
+    \item \textbf{Generation-based Fuzzing} : Create random content of file 
+    \item \textbf{Mutation-based Fuzzing} : start from a valid input and mutate by removing/inserting bytes 
+\end{itemize}
+
+You can either assume you have access to what you are trying to fuzz \textbf{whitebox} or not \textbf{blackbox}. A third type is \textbf{Coverage-guided} assumes that you modify the code to track the different branch an input can take which helps the fuzzer (if an input triggers a new branch that has not been explored, it is an intresting input).
