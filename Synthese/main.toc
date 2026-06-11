@@ -168,3 +168,19 @@
 \contentsline {paragraph}{Main idea}{37}{section*.119}%
 \contentsline {paragraph}{Chain of Trust}{38}{section*.120}%
 \contentsline {paragraph}{Example}{38}{section*.121}%
+\contentsline {paragraph}{Amplification}{38}{section*.122}%
+\contentsline {section}{\numberline {17}Authorization in Client-Server Application}{38}{section.17}%
+\contentsline {paragraph}{HTTP is stateless}{38}{section*.123}%
+\contentsline {subsection}{\numberline {17.1}Session Cookies}{38}{subsection.17.1}%
+\contentsline {paragraph}{Main idea}{38}{section*.124}%
+\contentsline {paragraph}{Securing the Session token}{38}{section*.126}%
+\contentsline {subsection}{\numberline {17.2}JSON Web Tokens}{39}{subsection.17.2}%
+\contentsline {paragraph}{What}{39}{section*.127}%
+\contentsline {paragraph}{How}{39}{section*.128}%
+\contentsline {paragraph}{Why}{39}{section*.129}%
+\contentsline {subsection}{\numberline {17.3}OAuth}{39}{subsection.17.3}%
+\contentsline {paragraph}{Motivation}{39}{section*.130}%
+\contentsline {paragraph}{Main idea}{39}{section*.131}%
+\contentsline {paragraph}{Why not directly return the access token?}{40}{section*.133}%
+\contentsline {paragraph}{Important distinction}{40}{section*.134}%
+\contentsline {paragraph}{Remarks}{41}{section*.135}%
