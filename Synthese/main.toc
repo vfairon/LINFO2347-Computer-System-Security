@@ -146,3 +146,25 @@
 \contentsline {subsection}{\numberline {14.5}Message Authentication Codes}{33}{subsection.14.5}%
 \contentsline {paragraph}{Building MACs from Hash Functions}{34}{section*.104}%
 \contentsline {paragraph}{HMAC}{34}{section*.105}%
+\contentsline {section}{\numberline {15}TLS}{34}{section.15}%
+\contentsline {paragraph}{TLS Handshake}{34}{section*.106}%
+\contentsline {paragraph}{Certificates}{34}{section*.107}%
+\contentsline {paragraph}{Chain of Trust}{34}{section*.108}%
+\contentsline {paragraph}{Key Exchange}{35}{section*.109}%
+\contentsline {paragraph}{TLS Records}{35}{section*.110}%
+\contentsline {paragraph}{Public Key Infrastructure}{35}{section*.111}%
+\contentsline {paragraph}{Limitations of TLS}{35}{section*.112}%
+\contentsline {paragraph}{TLS 1.3}{35}{section*.113}%
+\contentsline {paragraph}{AEAD Ciphers}{35}{section*.114}%
+\contentsline {paragraph}{Latency Improvements}{35}{section*.115}%
+\contentsline {paragraph}{Server Name Indication}{35}{section*.116}%
+\contentsline {section}{\numberline {16}Secure DNS}{36}{section.16}%
+\contentsline {paragraph}{Reminder of the weaknesses}{36}{section*.117}%
+\contentsline {subsection}{\numberline {16.1}DNS over TLS (DoT)}{36}{subsection.16.1}%
+\contentsline {subsection}{\numberline {16.2}DNS over HTTPS (DoH)}{36}{subsection.16.2}%
+\contentsline {subsection}{\numberline {16.3}QNAME Minimization}{37}{subsection.16.3}%
+\contentsline {paragraph}{Trusting the Resolver}{37}{section*.118}%
+\contentsline {subsection}{\numberline {16.4}DNSSEC}{37}{subsection.16.4}%
+\contentsline {paragraph}{Main idea}{37}{section*.119}%
+\contentsline {paragraph}{Chain of Trust}{38}{section*.120}%
+\contentsline {paragraph}{Example}{38}{section*.121}%

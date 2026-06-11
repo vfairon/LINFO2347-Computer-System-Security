@@ -1,0 +1,136 @@
+\section{Secure DNS}
+
+\paragraph{Reminder of the weaknesses}
+
+
+\begin{itemize}
+    \item NO authentitication so Man in the Middle possible and cache poisoning
+    \item No encryption so not privacy friendly 
+\end{itemize}
+
+There is several options to secure DNS
+
+\subsection{DNS over TLS (DoT)}
+Simply protect the DNS packets with a TLS connection. For more efficiency, the computer opens one TLS connection with the DNS resolver and keeps it open for some time.
+
+DoT has two modes : 
+\begin{itemize}
+    \item \textbf{Opportunistic DoT} : My computer only knows the IP of the DNS server and TLS session encrypts the messages. Consequence is that ISP cannot read your queries (since encrypted) but that you cannot verify the identity of the DNS resolver since you don't have its domain name (no CA verif).
+    \item \textbf{Strict DoT} : knows the domain name so can do certificate verificationé
+\end{itemize}
+
+\subsection{DNS over HTTPS (DoH)}
+
+DNS over HTTPS (DoH) follows the same goal as DNS over TLS (DoT): protecting DNS queries from eavesdroppers by encrypting them with TLS.
+
+Instead of sending DNS messages directly over a TLS connection, DoH encapsulates DNS messages inside ordinary HTTP requests, which are then protected by HTTPS:
+
+\[
+\text{DNS} \;\rightarrow\; \text{HTTP} \;\rightarrow\; \text{TLS}
+\]
+
+whereas DoT uses:
+
+\[
+\text{DNS} \;\rightarrow\; \text{TLS}
+\]
+
+As a result, DoH traffic is almost indistinguishable from normal HTTPS web traffic. 
+
+This allows applications (especially web browsers) to communicate with a DNS resolver of their choice even on networks that block or restrict traditional DNS or DoT traffic.
+
+DoH supports two ways of transmitting DNS queries:
+
+\begin{itemize}
+    \item \textbf{POST}: the DNS query is placed in the HTTP request body.
+    \item \textbf{GET}: the DNS query is encoded in the URL parameters.
+\end{itemize}
+
+The DNS response can be transmitted in different formats:
+
+\begin{itemize}
+    \item Traditional binary DNS message (\texttt{application/dns-message}).
+    \item JSON representation (\texttt{application/dns-json}).
+\end{itemize}
+
+For example, the query
+
+\begin{lstlisting}
+GET https://1.1.1.1/dns-query?name=google.com
+Accept: application/dns-json
+\end{lstlisting}
+
+may return:
+
+Since HTTP is only used as a "transport" layer, a successful DoH request almost always returns HTTP status code \texttt{200} and errors (e.g., non-existent domains) are encoded inside the DNS response itself rather than through HTTP error codes.
+
+Another advantage of DoH is that it can reuse the existing web infrastructure (HTTP, HTTPS, proxies, CDNs, HTTP/2, HTTP/3, etc.), making it easy to integrate into modern browsers. In fact, all major browsers support DoH and can directly communicate with a DNS resolver of their choice.
+
+The main drawback is that DoH traffic is harder for network administrators to monitor and filter. While this improves user privacy, it can also make malicious DNS activity more difficult to detect.
+
+\subsection{QNAME Minimization}
+
+During recursive DNS resolution, the full domain name is traditionally sent at every step, even when only part of the name is needed. This leaks unnecessary information to intermediate nameservers.
+
+QNAME minimization improves privacy by revealing only the minimum information required at each step:
+
+\begin{itemize}
+    \item Root nameserver: \texttt{.be}
+    \item \texttt{.be} nameserver: \texttt{uclouvain.be}
+    \item \texttt{uclouvain.be} nameserver: \texttt{www.uclouvain.be}
+\end{itemize}
+
+As a result, each nameserver only learns the information necessary to direct the resolver to the next level of the DNS hierarchy (a Nameserver might announce that it it responsible for the entirety of the subdomain).
+
+\paragraph{Trusting the Resolver}
+
+DoT and DoH encrypt DNS traffic between the client and its resolver, preventing network operators from observing DNS queries.
+
+However, the resolver still sees the full queried domain name and must therefore be trusted not to misuse this information. And the client has no visibility into how the resolver communicates with other DNS servers and must trust the resolver to correctly perform the resolution process.
+
+
+\subsection{DNSSEC}
+
+\paragraph{Main idea}
+
+Each DNS zone owns a public/private key pair.
+
+\begin{itemize}
+    \item \textbf{DNSKEY}: contains the public key of the zone.
+    \item \textbf{RRSIG}: digital signature of DNS records, created using the private key.
+    \item \textbf{DS}: hash of the child zone's DNSKEY, stored in the parent zone.
+    \item \textbf{NSEC/NSEC3}: authenticated proof that a domain name does not exist.
+\end{itemize}
+
+When a resolver receives a DNS answer, it verifies the accompanying signature using the corresponding DNSKEY.
+
+\paragraph{Chain of Trust}
+
+An attacker could forge both the DNS answer and the DNSKEY. DNSSEC prevents this using a chain of trust.
+
+The root DNS servers act as a \textbf{trust anchor}: their public key is hardcoded into resolvers.
+
+
+At each step, the resolver verifies that the hash of a zone's DNSKEY matches the DS record signed by its parent.
+
+As a result, an attacker cannot simply replace both the public key and the signature without breaking the chain of trust.
+
+\paragraph{Example}
+
+To resolve:
+
+\begin{lstlisting}
+www.uclouvain.be
+\end{lstlisting}
+
+the resolver obtains:
+
+\begin{itemize}
+    \item the DS record for \texttt{.be} from the root zone,
+    \item the DNSKEY of \texttt{.be},
+    \item the DS record for \texttt{uclouvain.be},
+    \item the DNSKEY of \texttt{uclouvain.be},
+    \item the signed A record of \texttt{www.uclouvain.be}.
+\end{itemize}
+
+If every signature and DS record verifies correctly, the answer is considered authentic.

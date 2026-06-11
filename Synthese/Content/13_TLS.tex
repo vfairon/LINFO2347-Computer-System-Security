@@ -1,0 +1,128 @@
+\section{TLS}
+
+TLS (\emph{Transport Layer Security}) is a protocol used to secure data
+exchange between two hosts. It is mainly known for HTTPS, which is HTTP
+over TLS. TLS provides authentication of the communicating hosts,
+confidentiality through encryption, and integrity protection for the
+transmitted data.
+
+\paragraph{TLS Handshake}
+
+Before encrypted communication can start, the client and server perform a
+handshake. In TLS 1.2, the client first opens a TCP connection and sends
+a \texttt{ClientHello} containing a random value $R_C$ and the list of
+supported cryptographic algorithms. The server replies with its own
+random value $R_S$, the chosen algorithms, and its X.509 certificate.
+
+The client then verifies the server certificate. This allows the client
+to check that it is really communicating with the intended server and not
+with a Man-in-the-Middle.
+
+$R_C$ and $R_S$ are fresh public random values used in the TLS handshake
+to derive unique session keys and prevent replay of old handshakes.
+\paragraph{Certificates}
+
+A certificate is a signed statement binding a server identity
+(e.g. domain name) to a public key. It is signed by a Certificate
+Authority (CA) using the CA's private key. When the client receives the
+certificate, it verifies the CA's signature using the CA's public key,
+which is trusted through the browser/OS root certificate store.
+
+\paragraph{Chain of Trust}
+
+A client can verify a certificate only if it trusts the CA that signed
+it. In practice, certificates are often signed by intermediate CAs, which
+are themselves signed by higher-level CAs. This forms a \emph{chain of
+trust}.
+
+
+\paragraph{Key Exchange}
+
+After the certificate has been verified, client and server establish
+shared secrets. In TLS 1.2, this can be done using Diffie-Hellman.
+
+The server sends its DH parameters and signs them with its private key (no men in the middle !).
+The client verifies the signature using the public key from the
+certificate. Then both sides compute the same Premaster Secret:
+
+\[
+PS = g^{ab} \bmod p
+\]
+
+From the Premaster Secret and the random values $R_C$ and $R_S$, both
+sides derive a Master Secret using a pseudo-random function. From this,
+TLS derives symmetric encryption keys and MAC keys, usually one pair for
+each direction.
+
+\paragraph{TLS Records}
+
+After the handshake, user data is sent in TLS records. A TLS record
+contains a fragment of application data, usually up to 16 KB. In TLS 1.2,
+the record is typically authenticated with a MAC and then encrypted with
+the negotiated symmetric cipher.
+
+Sequence numbers are included in the MAC computation to prevent replay
+attacks.
+
+% \paragraph{RSA Key Exchange}
+
+% Older TLS versions could also use RSA for key exchange. In that case,
+% the client generates a Premaster Secret and encrypts it with the
+% server's public RSA key.
+
+% This is no longer recommended because it does not provide forward
+% secrecy: if the server's long-term private key is compromised later, old
+% recorded sessions may be decrypted.
+
+\paragraph{Public Key Infrastructure}
+
+The certificates, Certificate Authorities, revocation lists, OCSP
+servers, and related components form a Public Key Infrastructure (PKI).
+The PKI is what allows a browser to decide whether a server certificate
+should be trusted.
+
+\paragraph{Limitations of TLS}
+
+TLS protects the communication channel, but it does not solve every
+security problem. It does not prevent DoS attacks, SQL injection, XSS, or
+phishing. It also cannot protect users if they trust the wrong website or
+if a trusted CA is compromised.
+
+\paragraph{TLS 1.3}
+
+TLS 1.3 improves TLS 1.2 by removing weak algorithms and problematic
+modes. RSA is no longer allowed for establishing the Premaster Secret;
+instead, TLS 1.3 uses DH or ECDH, which provide forward secrecy.
+
+TLS 1.3 also signs the cipher negotiation, which helps prevent downgrade
+attacks where a Man-in-the-Middle tries to force client and server to use
+weaker cryptography.
+
+\paragraph{AEAD Ciphers}
+
+TLS 1.3 only allows AEAD ciphers which stands for \emph{Authenticated Encryption with
+Associated Data}. It performs encryption and authentication together and
+produces both a ciphertext and an authentication tag.
+
+This avoids the older separate MAC-then-encrypt construction.
+
+\paragraph{Latency Improvements}
+
+TLS 1.3 reduces handshake latency. In 1-RTT mode, the client already
+sends key exchange information in its first message, allowing encrypted
+communication to start after one round trip.
+
+TLS 1.3 also supports 0-RTT mode for resumed connections, where the
+client reuses a previously established secret. However, 0-RTT data is
+vulnerable to replay attacks, so it should not be used for sensitive
+operations such as bank transfers.
+
+\paragraph{Server Name Indication}
+
+During the TLS handshake, the client sends the server name it wants to
+connect to using Server Name Indication (SNI). This is necessary because
+one IP address may host several domains with different certificates.
+
+In TLS 1.2 and normal TLS 1.3, SNI is sent in clear text, so observers
+can see which website is being visited. Encrypted Client Hello (ECH) is a
+TLS 1.3 extension that aims to encrypt this information.
