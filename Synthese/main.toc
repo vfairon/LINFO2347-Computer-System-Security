@@ -147,40 +147,40 @@
 \contentsline {paragraph}{Building MACs from Hash Functions}{34}{section*.104}%
 \contentsline {paragraph}{HMAC}{35}{section*.105}%
 \contentsline {section}{\numberline {15}TLS}{35}{section.15}%
-\contentsline {paragraph}{TLS Handshake}{35}{section*.106}%
-\contentsline {paragraph}{Certificates}{35}{section*.107}%
+\contentsline {subsection}{\numberline {15.1}TLS Handshake}{35}{subsection.15.1}%
+\contentsline {paragraph}{Certificates}{35}{section*.106}%
+\contentsline {paragraph}{Key Exchange}{35}{section*.107}%
 \contentsline {paragraph}{Chain of Trust}{35}{section*.108}%
-\contentsline {paragraph}{Key Exchange}{35}{section*.109}%
-\contentsline {paragraph}{TLS Records}{36}{section*.110}%
-\contentsline {paragraph}{Public Key Infrastructure}{36}{section*.111}%
-\contentsline {paragraph}{Limitations of TLS}{36}{section*.112}%
-\contentsline {paragraph}{TLS 1.3}{36}{section*.113}%
-\contentsline {paragraph}{AEAD Ciphers}{36}{section*.114}%
-\contentsline {paragraph}{Latency Improvements}{36}{section*.115}%
-\contentsline {paragraph}{Server Name Indication}{36}{section*.116}%
+\contentsline {paragraph}{TLS Records}{36}{section*.109}%
+\contentsline {paragraph}{Public Key Infrastructure}{36}{section*.110}%
+\contentsline {paragraph}{Limitations of TLS}{36}{section*.111}%
+\contentsline {paragraph}{TLS 1.3}{36}{section*.112}%
+\contentsline {paragraph}{AEAD Ciphers}{36}{section*.113}%
+\contentsline {paragraph}{Latency Improvements}{36}{section*.114}%
+\contentsline {paragraph}{Server Name Indication}{36}{section*.115}%
 \contentsline {section}{\numberline {16}Secure DNS}{36}{section.16}%
-\contentsline {paragraph}{Reminder of the weaknesses}{36}{section*.117}%
+\contentsline {paragraph}{Reminder of the weaknesses}{36}{section*.116}%
 \contentsline {subsection}{\numberline {16.1}DNS over TLS (DoT)}{37}{subsection.16.1}%
 \contentsline {subsection}{\numberline {16.2}DNS over HTTPS (DoH)}{37}{subsection.16.2}%
 \contentsline {subsection}{\numberline {16.3}QNAME Minimization}{38}{subsection.16.3}%
-\contentsline {paragraph}{Trusting the Resolver}{38}{section*.118}%
+\contentsline {paragraph}{Trusting the Resolver}{38}{section*.117}%
 \contentsline {subsection}{\numberline {16.4}DNSSEC}{38}{subsection.16.4}%
-\contentsline {paragraph}{Main idea}{38}{section*.119}%
-\contentsline {paragraph}{Chain of Trust}{38}{section*.120}%
-\contentsline {paragraph}{Example}{39}{section*.121}%
-\contentsline {paragraph}{Amplification}{39}{section*.122}%
+\contentsline {paragraph}{Main idea}{38}{section*.118}%
+\contentsline {paragraph}{Chain of Trust}{38}{section*.119}%
+\contentsline {paragraph}{Example}{39}{section*.120}%
+\contentsline {paragraph}{Amplification}{39}{section*.121}%
 \contentsline {section}{\numberline {17}Authorization in Client-Server Application}{39}{section.17}%
-\contentsline {paragraph}{HTTP is stateless}{39}{section*.123}%
+\contentsline {paragraph}{HTTP is stateless}{39}{section*.122}%
 \contentsline {subsection}{\numberline {17.1}Session Cookies}{39}{subsection.17.1}%
-\contentsline {paragraph}{Main idea}{39}{section*.124}%
-\contentsline {paragraph}{Securing the Session token}{40}{section*.126}%
+\contentsline {paragraph}{Main idea}{39}{section*.123}%
+\contentsline {paragraph}{Securing the Session token}{40}{section*.125}%
 \contentsline {subsection}{\numberline {17.2}JSON Web Tokens}{40}{subsection.17.2}%
-\contentsline {paragraph}{What}{40}{section*.127}%
-\contentsline {paragraph}{How}{40}{section*.128}%
-\contentsline {paragraph}{Why}{40}{section*.129}%
+\contentsline {paragraph}{What}{40}{section*.126}%
+\contentsline {paragraph}{How}{40}{section*.127}%
+\contentsline {paragraph}{Why}{40}{section*.128}%
 \contentsline {subsection}{\numberline {17.3}OAuth}{40}{subsection.17.3}%
-\contentsline {paragraph}{Motivation}{40}{section*.130}%
-\contentsline {paragraph}{Main idea}{40}{section*.131}%
-\contentsline {paragraph}{Why not directly return the access token?}{41}{section*.133}%
-\contentsline {paragraph}{Important distinction}{41}{section*.134}%
-\contentsline {paragraph}{Remarks}{41}{section*.135}%
+\contentsline {paragraph}{Motivation}{40}{section*.129}%
+\contentsline {paragraph}{Main idea}{40}{section*.130}%
+\contentsline {paragraph}{Why not directly return the access token?}{41}{section*.132}%
+\contentsline {paragraph}{Important distinction}{41}{section*.133}%
+\contentsline {paragraph}{Remarks}{41}{section*.134}%

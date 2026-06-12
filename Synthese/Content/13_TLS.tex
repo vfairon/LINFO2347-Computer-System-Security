@@ -6,7 +6,7 @@ over TLS. TLS provides authentication of the communicating hosts,
 confidentiality through encryption, and integrity protection for the
 transmitted data.
 
-\paragraph{TLS Handshake}
+\subsection{TLS Handshake}
 
 Before encrypted communication can start, the client and server perform a
 handshake. In TLS 1.2, the client first opens a TCP connection and sends
@@ -28,13 +28,6 @@ Authority (CA) using the CA's private key. When the client receives the
 certificate, it verifies the CA's signature using the CA's public key,
 which is trusted through the browser/OS root certificate store.
 
-\paragraph{Chain of Trust}
-
-A client can verify a certificate only if it trusts the CA that signed
-it. In practice, certificates are often signed by intermediate CAs, which
-are themselves signed by higher-level CAs. This forms a \emph{chain of
-trust}.
-
 
 \paragraph{Key Exchange}
 
@@ -53,6 +46,15 @@ From the Premaster Secret and the random values $R_C$ and $R_S$, both
 sides derive a Master Secret using a pseudo-random function. From this,
 TLS derives symmetric encryption keys and MAC keys, usually one pair for
 each direction.
+
+
+\paragraph{Chain of Trust}
+
+A client can verify a certificate only if it trusts the CA that signed
+it. In practice, certificates are often signed by intermediate CAs, which
+are themselves signed by higher-level CAs. This forms a \emph{chain of
+trust}.
+
 
 \paragraph{TLS Records}
 
