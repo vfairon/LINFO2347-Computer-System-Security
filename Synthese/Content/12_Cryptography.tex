@@ -275,39 +275,7 @@ to communicate with many other users. However, public-key cryptography is
 much slower than symmetric-key cryptography and usually relies on more
 complex mathematical assumptions.
 
-\paragraph{RSA}
-
-RSA is a classical public-key cryptosystem. Its security relies on the
-difficulty of deriving the private key from the public key, which is
-related to the difficulty of factoring a large number $n$.
-
-RSA key generation works as follows:
-
-\begin{enumerate}
-    \item choose two large primes $p$ and $q$,
-    \item compute $n = p \cdot q$,
-    \item compute $\varphi(n) = (p-1)(q-1)$,
-    \item choose $e$ such that $\gcd(e,\varphi(n)) = 1$,
-    \item compute $d$ such that $d \cdot e \equiv 1 \pmod{\varphi(n)}$.
-\end{enumerate}
-
-The public key is $(e,n)$ and the private key is $(d,n)$. The values
-$p$, $q$, and $\varphi(n)$ must remain secret or be deleted after key
-generation. Otherwise one could compute $d$ from $\varphi(n)$ and $e$.
-
-Encryption and decryption are defined as:
-
-\[
-E((e,n),m) = m^e \bmod n
-\]
-
-\[
-D((d,n),c) = c^d \bmod n
-\]
-
-The reason this works is that $d$ is chosen as the inverse of $e$ modulo
-$\varphi(n)$, so decrypting reverses the encryption operation.
-
+\paragraph{RSA} RSA is a classical public-key cryptosystem. Its security relies on the difficulty of deriving the private key from the public key, which is related to the difficulty of factoring a large number $n$. The intuition is that multiplying two large primes is easy, while recovering these two primes from their product is computationally hard. For example, computing $p \cdot q$ is efficient, but given only $n = p \cdot q$, finding the original primes $p$ and $q$ is difficult when they are very large. RSA key generation works as follows: \begin{enumerate} \item choose two large primes $p$ and $q$, \item compute $n = p \cdot q$, \item compute $\varphi(n) = (p-1)(q-1)$, \item choose $e$ such that $\gcd(e,\varphi(n)) = 1$, \item compute $d$ such that $d \cdot e \equiv 1 \pmod{\varphi(n)}$. \end{enumerate} The modulus $n$ defines the arithmetic space in which RSA computations are performed. The value $\varphi(n)$ is needed to construct the inverse exponent $d$. The condition $\gcd(e,\varphi(n)) = 1$ ensures that this inverse exists. There are many possible choices for $e$; in practice, common values such as $65537$ are often used. The public key is $(e,n)$ and the private key is $(d,n)$. The values $p$, $q$, and $\varphi(n)$ must remain secret or be deleted after key generation. Indeed, if an attacker factors $n$ and recovers $p$ and $q$, they can compute $\varphi(n)$ and then recover $d$ from $e$. Encryption and decryption are defined as: \[ E((e,n),m) = m^e \bmod n \] \[ D((d,n),c) = c^d \bmod n \] The reason this works is that $d$ is chosen as the inverse of $e$ modulo $\varphi(n)$. Therefore, exponentiating by $e$ and then by $d$ brings the message back to its original value modulo $n$: \[ (m^e)^d \equiv m \pmod n. \] In short, $e$ is the public exponent used to encrypt or verify signatures, while $d$ is the private exponent used to decrypt or sign. The security comes from the fact that knowing $(e,n)$ should not allow an attacker to compute $d$ without factoring $n$.
 \paragraph{Security of Textbook RSA}
 
 RSA in this simple form should not be used directly. It is deterministic:

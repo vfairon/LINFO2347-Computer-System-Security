@@ -69,13 +69,13 @@
 \contentsline {paragraph}{Sampling}{17}{section*.48}%
 \contentsline {section}{\numberline {9}Honeypots and Network Telescopes}{17}{section.9}%
 \contentsline {paragraph}{Honeypots.}{17}{section*.49}%
-\contentsline {paragraph}{Related Approaches.}{17}{section*.50}%
+\contentsline {paragraph}{Related Approaches.}{18}{section*.50}%
 \contentsline {paragraph}{Network Telescopes and Internet Background Radiation.}{18}{section*.51}%
 \contentsline {section}{\numberline {10}Firewalls}{18}{section.10}%
 \contentsline {subsection}{\numberline {10.1}Classification}{18}{subsection.10.1}%
-\contentsline {subsection}{\numberline {10.2}Location of a firewall}{18}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.2}Location of a firewall}{19}{subsection.10.2}%
 \contentsline {subsection}{\numberline {10.3}Syntax of NFTables Rules}{19}{subsection.10.3}%
-\contentsline {paragraph}{Connection Tracking States}{19}{section*.52}%
+\contentsline {paragraph}{Connection Tracking States}{20}{section*.52}%
 \contentsline {paragraph}{Connection Limits}{20}{section*.53}%
 \contentsline {paragraph}{Complete Example}{20}{section*.54}%
 \contentsline {subsection}{\numberline {10.4}Zones}{21}{subsection.10.4}%
@@ -83,104 +83,104 @@
 \contentsline {paragraph}{Outgoing Packets}{21}{section*.55}%
 \contentsline {paragraph}{Incoming Packets}{21}{section*.56}%
 \contentsline {paragraph}{Port Forwarding}{21}{section*.57}%
-\contentsline {paragraph}{Advantages}{21}{section*.58}%
-\contentsline {paragraph}{Drawbacks}{21}{section*.59}%
-\contentsline {paragraph}{NAT and Security}{21}{section*.60}%
-\contentsline {paragraph}{NAT Exhaustion}{21}{section*.61}%
+\contentsline {paragraph}{Advantages}{22}{section*.58}%
+\contentsline {paragraph}{Drawbacks}{22}{section*.59}%
+\contentsline {paragraph}{NAT and Security}{22}{section*.60}%
+\contentsline {paragraph}{NAT Exhaustion}{22}{section*.61}%
 \contentsline {paragraph}{NAT and IPv6}{22}{section*.62}%
 \contentsline {section}{\numberline {11}IDS}{22}{section.11}%
-\contentsline {subsection}{\numberline {11.1}Host-based IDS vs Network-based IDS}{22}{subsection.11.1}%
-\contentsline {paragraph}{Host-based IDS (HIDS).}{22}{section*.63}%
+\contentsline {subsection}{\numberline {11.1}Host-based IDS vs Network-based IDS}{23}{subsection.11.1}%
+\contentsline {paragraph}{Host-based IDS (HIDS).}{23}{section*.63}%
 \contentsline {paragraph}{Network-based IDS (NIDS).}{23}{section*.64}%
-\contentsline {subsection}{\numberline {11.2}DPI-based IDS: Snort}{23}{subsection.11.2}%
-\contentsline {subsection}{\numberline {11.3}DPI Performance}{23}{subsection.11.3}%
+\contentsline {subsection}{\numberline {11.2}DPI-based IDS: Snort}{24}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}DPI Performance}{24}{subsection.11.3}%
 \contentsline {subsection}{\numberline {11.4}Measuring Performance}{24}{subsection.11.4}%
 \contentsline {paragraph}{Classification}{24}{section*.65}%
 \contentsline {subsubsection}{\numberline {11.4.1}Confusion Matrix}{24}{subsubsection.11.4.1}%
 \contentsline {paragraph}{Important distinction.}{25}{section*.66}%
 \contentsline {subsubsection}{\numberline {11.4.2}Tuning the IDS}{25}{subsubsection.11.4.2}%
-\contentsline {section}{\numberline {12}Spam }{25}{section.12}%
-\contentsline {paragraph}{How to send spam ?}{25}{section*.67}%
+\contentsline {section}{\numberline {12}Spam }{26}{section.12}%
+\contentsline {paragraph}{How to send spam ?}{26}{section*.67}%
 \contentsline {paragraph}{Mail Filtering}{26}{section*.68}%
 \contentsline {paragraph}{SPF (Sender Policy Framework)}{26}{section*.69}%
 \contentsline {paragraph}{DKIM (DomainKeys Identified Mail)}{26}{section*.70}%
 \contentsline {paragraph}{DMARC}{26}{section*.71}%
 \contentsline {paragraph}{Blacklists and Greylisting}{26}{section*.72}%
-\contentsline {paragraph}{Bayesian Spam Filtering}{26}{section*.73}%
+\contentsline {paragraph}{Bayesian Spam Filtering}{27}{section*.73}%
 \contentsline {paragraph}{Remarks}{27}{section*.74}%
 \contentsline {section}{\numberline {13}Botnets}{27}{section.13}%
 \contentsline {paragraph}{Command and Control}{27}{section*.75}%
 \contentsline {paragraph}{Uses of Botnets}{27}{section*.76}%
 \contentsline {paragraph}{Architectures}{27}{section*.77}%
 \contentsline {paragraph}{Resilience Techniques}{27}{section*.78}%
-\contentsline {paragraph}{Fighting Botnets}{27}{section*.79}%
-\contentsline {paragraph}{Attack Economy}{27}{section*.80}%
-\contentsline {section}{\numberline {14}Cryptography}{27}{section.14}%
+\contentsline {paragraph}{Fighting Botnets}{28}{section*.79}%
+\contentsline {paragraph}{Attack Economy}{28}{section*.80}%
+\contentsline {section}{\numberline {14}Cryptography}{28}{section.14}%
 \contentsline {paragraph}{What cryptography is not}{28}{section*.81}%
 \contentsline {subsection}{\numberline {14.1}Symmetric-Key Cryptography}{28}{subsection.14.1}%
 \contentsline {paragraph}{Perfect Security}{28}{section*.82}%
 \contentsline {paragraph}{One-Time Pad}{28}{section*.83}%
-\contentsline {paragraph}{Attack on Reused One-Time Pad Keys}{28}{section*.84}%
+\contentsline {paragraph}{Attack on Reused One-Time Pad Keys}{29}{section*.84}%
 \contentsline {paragraph}{Stream Ciphers}{29}{section*.85}%
 \contentsline {paragraph}{Initialization Vector}{29}{section*.86}%
 \contentsline {paragraph}{Block Ciphers}{29}{section*.87}%
-\contentsline {paragraph}{Cipher Block Chaining}{29}{section*.88}%
-\contentsline {paragraph}{Iterated Block Ciphers}{29}{section*.89}%
+\contentsline {paragraph}{Cipher Block Chaining}{30}{section*.88}%
+\contentsline {paragraph}{Iterated Block Ciphers}{30}{section*.89}%
 \contentsline {paragraph}{DES}{30}{section*.90}%
 \contentsline {paragraph}{3DES}{30}{section*.91}%
 \contentsline {paragraph}{AES}{30}{section*.92}%
 \contentsline {paragraph}{Key Management}{30}{section*.93}%
-\contentsline {paragraph}{Replay Attacks}{30}{section*.94}%
-\contentsline {subsection}{\numberline {14.2}Public-Key Cryptography}{30}{subsection.14.2}%
+\contentsline {paragraph}{Replay Attacks}{31}{section*.94}%
+\contentsline {subsection}{\numberline {14.2}Public-Key Cryptography}{31}{subsection.14.2}%
 \contentsline {paragraph}{Advantages and Drawbacks}{31}{section*.95}%
 \contentsline {paragraph}{RSA}{31}{section*.96}%
-\contentsline {paragraph}{Security of Textbook RSA}{31}{section*.97}%
+\contentsline {paragraph}{Security of Textbook RSA}{32}{section*.97}%
 \contentsline {paragraph}{Hybrid Encryption}{32}{section*.98}%
-\contentsline {subsection}{\numberline {14.3}Diffie-Hellman Key Exchange}{32}{subsection.14.3}%
-\contentsline {paragraph}{Security of Diffie-Hellman}{32}{section*.99}%
+\contentsline {subsection}{\numberline {14.3}Diffie-Hellman Key Exchange}{33}{subsection.14.3}%
+\contentsline {paragraph}{Security of Diffie-Hellman}{33}{section*.99}%
 \contentsline {paragraph}{Elliptic Curve Diffie-Hellman}{33}{section*.100}%
 \contentsline {subsection}{\numberline {14.4}Cryptographic Hash Functions}{33}{subsection.14.4}%
-\contentsline {paragraph}{Desired Properties}{33}{section*.101}%
-\contentsline {paragraph}{Birthday Paradox}{33}{section*.102}%
-\contentsline {paragraph}{SHA-256}{33}{section*.103}%
-\contentsline {subsection}{\numberline {14.5}Message Authentication Codes}{33}{subsection.14.5}%
+\contentsline {paragraph}{Desired Properties}{34}{section*.101}%
+\contentsline {paragraph}{Birthday Paradox}{34}{section*.102}%
+\contentsline {paragraph}{SHA-256}{34}{section*.103}%
+\contentsline {subsection}{\numberline {14.5}Message Authentication Codes}{34}{subsection.14.5}%
 \contentsline {paragraph}{Building MACs from Hash Functions}{34}{section*.104}%
-\contentsline {paragraph}{HMAC}{34}{section*.105}%
-\contentsline {section}{\numberline {15}TLS}{34}{section.15}%
-\contentsline {paragraph}{TLS Handshake}{34}{section*.106}%
-\contentsline {paragraph}{Certificates}{34}{section*.107}%
-\contentsline {paragraph}{Chain of Trust}{34}{section*.108}%
+\contentsline {paragraph}{HMAC}{35}{section*.105}%
+\contentsline {section}{\numberline {15}TLS}{35}{section.15}%
+\contentsline {paragraph}{TLS Handshake}{35}{section*.106}%
+\contentsline {paragraph}{Certificates}{35}{section*.107}%
+\contentsline {paragraph}{Chain of Trust}{35}{section*.108}%
 \contentsline {paragraph}{Key Exchange}{35}{section*.109}%
-\contentsline {paragraph}{TLS Records}{35}{section*.110}%
-\contentsline {paragraph}{Public Key Infrastructure}{35}{section*.111}%
-\contentsline {paragraph}{Limitations of TLS}{35}{section*.112}%
-\contentsline {paragraph}{TLS 1.3}{35}{section*.113}%
-\contentsline {paragraph}{AEAD Ciphers}{35}{section*.114}%
-\contentsline {paragraph}{Latency Improvements}{35}{section*.115}%
-\contentsline {paragraph}{Server Name Indication}{35}{section*.116}%
+\contentsline {paragraph}{TLS Records}{36}{section*.110}%
+\contentsline {paragraph}{Public Key Infrastructure}{36}{section*.111}%
+\contentsline {paragraph}{Limitations of TLS}{36}{section*.112}%
+\contentsline {paragraph}{TLS 1.3}{36}{section*.113}%
+\contentsline {paragraph}{AEAD Ciphers}{36}{section*.114}%
+\contentsline {paragraph}{Latency Improvements}{36}{section*.115}%
+\contentsline {paragraph}{Server Name Indication}{36}{section*.116}%
 \contentsline {section}{\numberline {16}Secure DNS}{36}{section.16}%
 \contentsline {paragraph}{Reminder of the weaknesses}{36}{section*.117}%
-\contentsline {subsection}{\numberline {16.1}DNS over TLS (DoT)}{36}{subsection.16.1}%
-\contentsline {subsection}{\numberline {16.2}DNS over HTTPS (DoH)}{36}{subsection.16.2}%
-\contentsline {subsection}{\numberline {16.3}QNAME Minimization}{37}{subsection.16.3}%
-\contentsline {paragraph}{Trusting the Resolver}{37}{section*.118}%
-\contentsline {subsection}{\numberline {16.4}DNSSEC}{37}{subsection.16.4}%
-\contentsline {paragraph}{Main idea}{37}{section*.119}%
+\contentsline {subsection}{\numberline {16.1}DNS over TLS (DoT)}{37}{subsection.16.1}%
+\contentsline {subsection}{\numberline {16.2}DNS over HTTPS (DoH)}{37}{subsection.16.2}%
+\contentsline {subsection}{\numberline {16.3}QNAME Minimization}{38}{subsection.16.3}%
+\contentsline {paragraph}{Trusting the Resolver}{38}{section*.118}%
+\contentsline {subsection}{\numberline {16.4}DNSSEC}{38}{subsection.16.4}%
+\contentsline {paragraph}{Main idea}{38}{section*.119}%
 \contentsline {paragraph}{Chain of Trust}{38}{section*.120}%
-\contentsline {paragraph}{Example}{38}{section*.121}%
-\contentsline {paragraph}{Amplification}{38}{section*.122}%
-\contentsline {section}{\numberline {17}Authorization in Client-Server Application}{38}{section.17}%
-\contentsline {paragraph}{HTTP is stateless}{38}{section*.123}%
-\contentsline {subsection}{\numberline {17.1}Session Cookies}{38}{subsection.17.1}%
-\contentsline {paragraph}{Main idea}{38}{section*.124}%
-\contentsline {paragraph}{Securing the Session token}{38}{section*.126}%
-\contentsline {subsection}{\numberline {17.2}JSON Web Tokens}{39}{subsection.17.2}%
-\contentsline {paragraph}{What}{39}{section*.127}%
-\contentsline {paragraph}{How}{39}{section*.128}%
-\contentsline {paragraph}{Why}{39}{section*.129}%
-\contentsline {subsection}{\numberline {17.3}OAuth}{39}{subsection.17.3}%
-\contentsline {paragraph}{Motivation}{39}{section*.130}%
-\contentsline {paragraph}{Main idea}{39}{section*.131}%
-\contentsline {paragraph}{Why not directly return the access token?}{40}{section*.133}%
-\contentsline {paragraph}{Important distinction}{40}{section*.134}%
+\contentsline {paragraph}{Example}{39}{section*.121}%
+\contentsline {paragraph}{Amplification}{39}{section*.122}%
+\contentsline {section}{\numberline {17}Authorization in Client-Server Application}{39}{section.17}%
+\contentsline {paragraph}{HTTP is stateless}{39}{section*.123}%
+\contentsline {subsection}{\numberline {17.1}Session Cookies}{39}{subsection.17.1}%
+\contentsline {paragraph}{Main idea}{39}{section*.124}%
+\contentsline {paragraph}{Securing the Session token}{40}{section*.126}%
+\contentsline {subsection}{\numberline {17.2}JSON Web Tokens}{40}{subsection.17.2}%
+\contentsline {paragraph}{What}{40}{section*.127}%
+\contentsline {paragraph}{How}{40}{section*.128}%
+\contentsline {paragraph}{Why}{40}{section*.129}%
+\contentsline {subsection}{\numberline {17.3}OAuth}{40}{subsection.17.3}%
+\contentsline {paragraph}{Motivation}{40}{section*.130}%
+\contentsline {paragraph}{Main idea}{40}{section*.131}%
+\contentsline {paragraph}{Why not directly return the access token?}{41}{section*.133}%
+\contentsline {paragraph}{Important distinction}{41}{section*.134}%
 \contentsline {paragraph}{Remarks}{41}{section*.135}%

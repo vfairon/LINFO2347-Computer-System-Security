@@ -18,7 +18,8 @@ To solve the issue of big packet load capturing, one can :
 \end{itemize}
 
 \paragraph{Flow monitoring} can either be \textbf{part of the router} or a \textbf{standalone application} getting data from the router's mirror port or offline from files.
-Flow monitoring comes with a loss of information (no payload, details of packet header) but you still get the IP's, port numbers, sizes.
+
+Flow monitoring only analyzes the \textbf{part of the headers} still get things like the IP's, port numbers, sizes, TCP flags.
 
 \paragraph{Sampling} You can sample three different ways : 
 \begin{itemize}
